@@ -94,7 +94,7 @@ def build_baseline_system(corpus_path):
     chunks = []
     for d in docs:
         for sent_num, c in enumerate(split_sentences_punctuation(d["text"])):
-            chunks.append({"doc_id": d["id"] + f"_s_{sent_num}", "title": d["title"], "text": c})
+            chunks.append({"doc_id": d["id"] + f"_s_{sent_num}", "title": d["title"], "text": f"Title: {d['title']}\n{c}"})
 
     # Encode and normalize (same as baseline)
     vectors = model.encode([c["text"] for c in chunks])

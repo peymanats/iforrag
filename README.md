@@ -18,3 +18,8 @@ I use sentence chunking strategy and as at now the retrevel is important i eval 
 
 ![confusion matrix](results/sentence_chunking/confusion_matrix.png)
   
+simply adding title to each chunk boost the scores of TP samples now with treshholds ~0.7 the unanswerable questions approximatly seprated as shows in plot of scores distribution.
+
+![score distribution](results\sentences_chunking_title\score_distribution.png)
+
+![confusion matrix](results\sentences_chunking_title\confusion_matrix.png)
