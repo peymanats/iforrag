@@ -11,3 +11,10 @@ After adding threshold 5 for the baseline and evaluating on data, it shows that 
 ![confusion matrix](results/baseline_tresh/confusion_matrix.png)
 
 i think the problem is that the chunk contexts arent specific and are very general so every query that point a little to that even unrelated can have answer.
+
+I use sentence chunking strategy and as at now the retrevel is important i eval that the doc_id be the same as the ground truth doc_id (not createing seprate label for each sentences) and the result shows that the recal@1  and recal@3 imporved by 3% but min scores of unanswerable samples goes up by ~0.1 by threshold 0.5 the plots like this:
+
+![score distribution](results/sentence_chunking/score_distribution.png)
+
+![confusion matrix](results/sentence_chunking/confusion_matrix.png)
+  

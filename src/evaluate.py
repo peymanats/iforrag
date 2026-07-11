@@ -25,7 +25,7 @@ import json
 import os
 import sys
 import numpy as np
-
+import re
 # ──────────────────────────────────────────────
 # Paths
 # ──────────────────────────────────────────────
@@ -40,6 +40,20 @@ if PROJECT_ROOT not in sys.path:
 # ──────────────────────────────────────────────
 # Data loading
 # ──────────────────────────────────────────────
+def split_sentences_punctuation(text):
+    """
+    Splits text into sentences using punctuation marks.
+    
+    Parameters:
+    text (str): The input text to be split.
+    
+    Returns:
+    list: A list of sentences.
+    """
+    # Regular expression to split sentences based on punctuation marks
+    sentences = re.split(r'(?<=[.!?]) +', text)
+    return sentences
+
 
 def load_corpus(path):
     docs = []
@@ -79,8 +93,8 @@ def build_baseline_system(corpus_path):
     # Build chunks (same as baseline)
     chunks = []
     for d in docs:
-        for c in chunk_text(d["text"], CHUNK_SIZE):
-            chunks.append({"doc_id": d["id"], "title": d["title"], "text": c})
+        for sent_num, c in enumerate(split_sentences_punctuation(d["text"])):
+            chunks.append({"doc_id": d["id"] + f"_s_{sent_num}", "title": d["title"], "text": c})
 
     # Encode and normalize (same as baseline)
     vectors = model.encode([c["text"] for c in chunks])
@@ -101,7 +115,7 @@ def build_baseline_system(corpus_path):
         seen_docs = set()
         results = []
         for idx in order:
-            doc_id = chunks[idx]["doc_id"]
+            doc_id = chunks[idx]["doc_id"].split("_s_")[0]  # remove sentence suffix for deduplication
             if doc_id in seen_docs:
                 continue
             seen_docs.add(doc_id)
