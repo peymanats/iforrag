@@ -10,7 +10,7 @@ import json
 import numpy as np
 from sentence_transformers import SentenceTransformer
 
-CORPUS_PATH = "corpus.jsonl"
+CORPUS_PATH = "data/raw/corpus.jsonl"
 CHUNK_SIZE = 400
 EMBED_MODEL = "all-MiniLM-L6-v2"
 
@@ -51,8 +51,12 @@ def retrieve(query, chunks, vectors, model):
 
 def answer(query, chunks, vectors, model):
     hit, score = retrieve(query, chunks, vectors, model)
-    # Returns the single best-matching chunk as the answer.
-    return f"[{hit['doc_id']}] {hit['text']}"
+    if score < 0.7:
+        return "I don't know the answer to that."
+    else:
+        # Returns the single best-matching chunk as the answer.
+        return f"[{hit['doc_id']}] {hit['text']}"
+
 
 
 if __name__ == "__main__":
