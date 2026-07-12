@@ -39,3 +39,5 @@ i added sliding window chunking and test it on both only semantic search and rer
 ![score distribution](results\reranker_sliding_100_50\score_distribution.png)
 
 ![confusion matrix](results\reranker_sliding_100_50\confusion_matrix.png)
+
+after testing diffrent treshhold and sliding window it shows that the retrevier alone with tresholds 0.65 have accuracy 85% on eval dataset for results be generalizable i create 100 test samples, as i expected on the unseed samples the semantic retriever with 0.65 tresh cant make good decision and accuracy drops to 65% shows that single treshold cant seprate well unanswerable qustions.
