@@ -1,7 +1,16 @@
 import re
 from collections import Counter
 
+class Tokenizer:
+    def tokenize(self, text):
+        text = text.lower()
+        text = text.replace("—", " ")
+        text = text.replace("–", " ")
+        text = re.sub(r"\s+/\s+", " ", text)
 
+        pattern = r"[a-z]+\d*(?:[-/][a-z0-9]+)*|\d+(?:\.\d+)?"
+        return re.findall(pattern, text)
+    
 class InvertedIndex:
     def __init__(self):
         # term -> {doc_id: term_frequency}
@@ -18,31 +27,12 @@ class InvertedIndex:
 
 
 class IndexBuilder:
-    def __init__(self):
+    def __init__(self,tokenizer):
+        self.tokenizer = tokenizer
         self.inverted_index = InvertedIndex()
         self.doc_lengths = {}
         self.documents = {}
-
-    def tokenize(self, text):
-        text = text.lower()
-
-        # Normalize title separators
-        text = text.replace("—", " ")
-        text = text.replace("–", " ")
-
-        # "Lockout / Tagout" -> "lockout tagout"
-        text = re.sub(r"\s+/\s+", " ", text)
-
-        # Keep:
-        #   p-200
-        #   e-207
-        #   brg-4410
-        #   m3/h
-        #   mm/s
-        #   4.5
-        pattern = r"[a-z]+\d*(?:[-/][a-z0-9]+)*|\d+(?:\.\d+)?"
-
-        return re.findall(pattern, text)
+        self.avgdl = 0.0
 
     def build(self, corpus):
         for doc in corpus:
@@ -50,8 +40,7 @@ class IndexBuilder:
 
             # Index title + body
             document = f"{doc['title']} {doc['text']}"
-
-            tokens = self.tokenize(document)
+            tokens = self.tokenizer.tokenize(document)
 
             self.documents[doc_id] = doc
             self.doc_lengths[doc_id] = len(tokens)
@@ -61,4 +50,7 @@ class IndexBuilder:
             for term, freq in tf.items():
                 self.inverted_index.add(term, doc_id, freq)
 
+        if self.doc_lengths:
+            self.avgdl = sum(self.doc_lengths.values()) / len(self.doc_lengths)
+            
         return self.inverted_index
