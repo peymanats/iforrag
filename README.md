@@ -25,3 +25,11 @@ simply adding title to each chunk boost the scores of TP samples now with treshh
 ![confusion matrix](results\sentences_chunking_title\confusion_matrix.png)
 
 as results shows in below images the bm25 term-based search algo also works good on our data for answerable questions but using bm25 seprately can catch the unanswerable questions so next step is use bm25 as retirever and sematic retreiver as reranker as the recal@3 of bm25 is 100% we can ensure in top-5 result of it there is gold doc and it can boost the scores. also i added build_time and retrieval speed time mesuring.
+
+i added near_duplicate.iptnb for detecting witch sentences are similiar so we can catch duplicates and conflicts later it shows that DOC-02_s_2 and DOC-01_s_2 are knowledge conflicts and DOC-05_s_0 and DOC-06_s_0 have knowledge dupliocate.
+
+i also implement reranker that first bm25 retrieve top 8 candidates_docs then reranker rerank them using cosine similarity of just these 8 docs sentences embeddings but no imporovement happend. i think go for hyprid search and methods like RRF(reciprocal rank fusion) isnt good choice cause have no impact on unanswerable questions it may have just little improvement on eror code queries. so i prefer to go for improving context with some metadata and semantic search alone.
+
+![score distribution](results\sentences_chunking_title\score_distribution.png)
+
+![confusion matrix](results\sentences_chunking_title\confusion_matrix.png)

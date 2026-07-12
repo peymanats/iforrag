@@ -1,0 +1,643 @@
+{
+  "n_answerable": 25,
+  "n_unanswerable": 10,
+  "abstain_threshold": 0.5,
+  "hit_rate_at_1": 0.96,
+  "hit_rate_at_3": 1.0,
+  "mrr": 0.98,
+  "abstention_rate": 0.1,
+  "fabrication_rate": 0.9,
+  "false_abstain_rate": 0.0,
+  "avg_score_answerable": 0.7623719716072083,
+  "avg_score_unanswerable": 0.5818899154663086,
+  "min_score_answerable": 0.5367449522018433,
+  "max_score_unanswerable": 0.7401803731918335,
+  "per_category": {
+    "easy_lookup": {
+      "total": 8,
+      "hit1": 8
+    },
+    "error_code": {
+      "total": 4,
+      "hit1": 3
+    },
+    "part_number": {
+      "total": 1,
+      "hit1": 1
+    },
+    "conflict": {
+      "total": 1,
+      "hit1": 1
+    },
+    "near_duplicate": {
+      "total": 1,
+      "hit1": 1
+    },
+    "general_maintenance": {
+      "total": 2,
+      "hit1": 2
+    },
+    "spec_lookup": {
+      "total": 5,
+      "hit1": 5
+    },
+    "paraphrase": {
+      "total": 3,
+      "hit1": 3
+    }
+  },
+  "per_question": [
+    {
+      "id": "Q01",
+      "category": "easy_lookup",
+      "question": "What is the rated output of the C-100 compressor?",
+      "expected": [
+        "DOC-03"
+      ],
+      "retrieved": [
+        "DOC-03",
+        "DOC-01",
+        "DOC-02"
+      ],
+      "top_score": 0.7805047035217285,
+      "hit@1": true,
+      "first_correct_rank": 1,
+      "abstained": false,
+      "answerable": true
+    },
+    {
+      "id": "Q02",
+      "category": "easy_lookup",
+      "question": "How often should temperature sensors be calibrated?",
+      "expected": [
+        "DOC-10"
+      ],
+      "retrieved": [
+        "DOC-10",
+        "DOC-03",
+        "DOC-05"
+      ],
+      "top_score": 0.7814123034477234,
+      "hit@1": true,
+      "first_correct_rank": 1,
+      "abstained": false,
+      "answerable": true
+    },
+    {
+      "id": "Q03",
+      "category": "easy_lookup",
+      "question": "What should be checked before starting the M-50 motor?",
+      "expected": [
+        "DOC-04"
+      ],
+      "retrieved": [
+        "DOC-04",
+        "DOC-11",
+        "DOC-07"
+      ],
+      "top_score": 0.7789732813835144,
+      "hit@1": true,
+      "first_correct_rank": 1,
+      "abstained": false,
+      "answerable": true
+    },
+    {
+      "id": "Q04",
+      "category": "error_code",
+      "question": "What does error code E-207 indicate and what should be done?",
+      "expected": [
+        "DOC-07"
+      ],
+      "retrieved": [
+        "DOC-07",
+        "DOC-08",
+        "DOC-03"
+      ],
+      "top_score": 0.7103966474533081,
+      "hit@1": true,
+      "first_correct_rank": 1,
+      "abstained": false,
+      "answerable": true
+    },
+    {
+      "id": "Q05",
+      "category": "error_code",
+      "question": "What does error code E-120 mean?",
+      "expected": [
+        "DOC-08"
+      ],
+      "retrieved": [
+        "DOC-07",
+        "DOC-08",
+        "DOC-03"
+      ],
+      "top_score": 0.7270524501800537,
+      "hit@1": false,
+      "first_correct_rank": 2,
+      "abstained": false,
+      "answerable": true
+    },
+    {
+      "id": "Q06",
+      "category": "part_number",
+      "question": "What is the replacement interval for bearing BRG-4410?",
+      "expected": [
+        "DOC-09"
+      ],
+      "retrieved": [
+        "DOC-09",
+        "DOC-06",
+        "DOC-02"
+      ],
+      "top_score": 0.8304731845855713,
+      "hit@1": true,
+      "first_correct_rank": 1,
+      "abstained": false,
+      "answerable": true
+    },
+    {
+      "id": "Q07",
+      "category": "conflict",
+      "question": "What is the maximum operating pressure of the P-200 pump?",
+      "expected": [
+        "DOC-01",
+        "DOC-02"
+      ],
+      "retrieved": [
+        "DOC-01",
+        "DOC-02",
+        "DOC-12"
+      ],
+      "top_score": 0.8903918266296387,
+      "hit@1": true,
+      "first_correct_rank": 1,
+      "abstained": false,
+      "answerable": true
+    },
+    {
+      "id": "Q08",
+      "category": "near_duplicate",
+      "question": "What is the acceptable vibration limit for F-30 fans?",
+      "expected": [
+        "DOC-05",
+        "DOC-06"
+      ],
+      "retrieved": [
+        "DOC-05",
+        "DOC-06",
+        "DOC-09"
+      ],
+      "top_score": 0.8543132543563843,
+      "hit@1": true,
+      "first_correct_rank": 1,
+      "abstained": false,
+      "answerable": true
+    },
+    {
+      "id": "Q09",
+      "category": "general_maintenance",
+      "question": "How often are compressors serviced?",
+      "expected": [
+        "DOC-12"
+      ],
+      "retrieved": [
+        "DOC-12",
+        "DOC-03",
+        "DOC-02"
+      ],
+      "top_score": 0.7088487148284912,
+      "hit@1": true,
+      "first_correct_rank": 1,
+      "abstained": false,
+      "answerable": true
+    },
+    {
+      "id": "Q10",
+      "category": "easy_lookup",
+      "question": "Who is allowed to remove a lockout lock?",
+      "expected": [
+        "DOC-11"
+      ],
+      "retrieved": [
+        "DOC-11",
+        "DOC-13",
+        "DOC-09"
+      ],
+      "top_score": 0.7460705041885376,
+      "hit@1": true,
+      "first_correct_rank": 1,
+      "abstained": false,
+      "answerable": true
+    },
+    {
+      "id": "Q11",
+      "category": "easy_lookup",
+      "question": "What should be verified during commissioning?",
+      "expected": [
+        "DOC-13"
+      ],
+      "retrieved": [
+        "DOC-13",
+        "DOC-02",
+        "DOC-04"
+      ],
+      "top_score": 0.7312189340591431,
+      "hit@1": true,
+      "first_correct_rank": 1,
+      "abstained": false,
+      "answerable": true
+    },
+    {
+      "id": "Q12",
+      "category": "easy_lookup",
+      "question": "What are the steps for an emergency shutdown?",
+      "expected": [
+        "DOC-14"
+      ],
+      "retrieved": [
+        "DOC-14",
+        "DOC-11",
+        "DOC-07"
+      ],
+      "top_score": 0.6957756280899048,
+      "hit@1": true,
+      "first_correct_rank": 1,
+      "abstained": false,
+      "answerable": true
+    },
+    {
+      "id": "Q13",
+      "category": "easy_lookup",
+      "question": "How do you order spare parts?",
+      "expected": [
+        "DOC-15"
+      ],
+      "retrieved": [
+        "DOC-15",
+        "DOC-09",
+        "DOC-02"
+      ],
+      "top_score": 0.717675507068634,
+      "hit@1": true,
+      "first_correct_rank": 1,
+      "abstained": false,
+      "answerable": true
+    },
+    {
+      "id": "Q14",
+      "category": "easy_lookup",
+      "question": "How are field sensor readings logged?",
+      "expected": [
+        "DOC-16"
+      ],
+      "retrieved": [
+        "DOC-16",
+        "DOC-10",
+        "DOC-02"
+      ],
+      "top_score": 0.7949613332748413,
+      "hit@1": true,
+      "first_correct_rank": 1,
+      "abstained": false,
+      "answerable": true
+    },
+    {
+      "id": "Q15",
+      "category": "spec_lookup",
+      "question": "What is the motor power of the C-100 compressor?",
+      "expected": [
+        "DOC-03"
+      ],
+      "retrieved": [
+        "DOC-03",
+        "DOC-01",
+        "DOC-04"
+      ],
+      "top_score": 0.8427116870880127,
+      "hit@1": true,
+      "first_correct_rank": 1,
+      "abstained": false,
+      "answerable": true
+    },
+    {
+      "id": "Q16",
+      "category": "spec_lookup",
+      "question": "When must condensate be drained on the C-100?",
+      "expected": [
+        "DOC-03"
+      ],
+      "retrieved": [
+        "DOC-03",
+        "DOC-07",
+        "DOC-04"
+      ],
+      "top_score": 0.8363156914710999,
+      "hit@1": true,
+      "first_correct_rank": 1,
+      "abstained": false,
+      "answerable": true
+    },
+    {
+      "id": "Q17",
+      "category": "spec_lookup",
+      "question": "What is the nominal flow rate of the P-200 pump?",
+      "expected": [
+        "DOC-01"
+      ],
+      "retrieved": [
+        "DOC-01",
+        "DOC-02",
+        "DOC-03"
+      ],
+      "top_score": 0.8824188709259033,
+      "hit@1": true,
+      "first_correct_rank": 1,
+      "abstained": false,
+      "answerable": true
+    },
+    {
+      "id": "Q18",
+      "category": "general_maintenance",
+      "question": "How often is the P-200 pump serviced?",
+      "expected": [
+        "DOC-02"
+      ],
+      "retrieved": [
+        "DOC-02",
+        "DOC-12",
+        "DOC-01"
+      ],
+      "top_score": 0.7595943212509155,
+      "hit@1": true,
+      "first_correct_rank": 1,
+      "abstained": false,
+      "answerable": true
+    },
+    {
+      "id": "Q19",
+      "category": "paraphrase",
+      "question": "What must be done before any maintenance work?",
+      "expected": [
+        "DOC-11"
+      ],
+      "retrieved": [
+        "DOC-11",
+        "DOC-13",
+        "DOC-02"
+      ],
+      "top_score": 0.5367449522018433,
+      "hit@1": true,
+      "first_correct_rank": 1,
+      "abstained": false,
+      "answerable": true
+    },
+    {
+      "id": "Q20",
+      "category": "error_code",
+      "question": "What does error code E-208 indicate?",
+      "expected": [
+        "DOC-07"
+      ],
+      "retrieved": [
+        "DOC-07",
+        "DOC-08",
+        "DOC-03"
+      ],
+      "top_score": 0.7821265459060669,
+      "hit@1": true,
+      "first_correct_rank": 1,
+      "abstained": false,
+      "answerable": true
+    },
+    {
+      "id": "Q21",
+      "category": "error_code",
+      "question": "What does error code E-115 indicate?",
+      "expected": [
+        "DOC-08"
+      ],
+      "retrieved": [
+        "DOC-08",
+        "DOC-07",
+        "DOC-03"
+      ],
+      "top_score": 0.7191792130470276,
+      "hit@1": true,
+      "first_correct_rank": 1,
+      "abstained": false,
+      "answerable": true
+    },
+    {
+      "id": "Q22",
+      "category": "paraphrase",
+      "question": "Can a bearing be reused after it has been removed?",
+      "expected": [
+        "DOC-09"
+      ],
+      "retrieved": [
+        "DOC-09",
+        "DOC-11",
+        "DOC-06"
+      ],
+      "top_score": 0.6322317123413086,
+      "hit@1": true,
+      "first_correct_rank": 1,
+      "abstained": false,
+      "answerable": true
+    },
+    {
+      "id": "Q23",
+      "category": "spec_lookup",
+      "question": "What is the inlet size of the P-200 pump?",
+      "expected": [
+        "DOC-01"
+      ],
+      "retrieved": [
+        "DOC-01",
+        "DOC-02",
+        "DOC-03"
+      ],
+      "top_score": 0.8142668008804321,
+      "hit@1": true,
+      "first_correct_rank": 1,
+      "abstained": false,
+      "answerable": true
+    },
+    {
+      "id": "Q24",
+      "category": "spec_lookup",
+      "question": "What is the operating temperature range of the P-200 pump?",
+      "expected": [
+        "DOC-01"
+      ],
+      "retrieved": [
+        "DOC-01",
+        "DOC-02",
+        "DOC-03"
+      ],
+      "top_score": 0.8977450132369995,
+      "hit@1": true,
+      "first_correct_rank": 1,
+      "abstained": false,
+      "answerable": true
+    },
+    {
+      "id": "Q25",
+      "category": "paraphrase",
+      "question": "What should be inspected during preventive maintenance of the P-200?",
+      "expected": [
+        "DOC-02"
+      ],
+      "retrieved": [
+        "DOC-02",
+        "DOC-12",
+        "DOC-13"
+      ],
+      "top_score": 0.6078962087631226,
+      "hit@1": true,
+      "first_correct_rank": 1,
+      "abstained": false,
+      "answerable": true
+    },
+    {
+      "id": "U01",
+      "category": "abstention",
+      "question": "What is the warranty period of the C-100 compressor?",
+      "expected": [],
+      "retrieved": [
+        "DOC-03",
+        "DOC-12",
+        "DOC-02"
+      ],
+      "top_score": 0.5511121153831482,
+      "abstained": false,
+      "answerable": false
+    },
+    {
+      "id": "U02",
+      "category": "abstention",
+      "question": "What is the purchase price of the P-200 pump?",
+      "expected": [],
+      "retrieved": [
+        "DOC-01",
+        "DOC-02",
+        "DOC-03"
+      ],
+      "top_score": 0.6400235891342163,
+      "abstained": false,
+      "answerable": false
+    },
+    {
+      "id": "U03",
+      "category": "abstention",
+      "question": "Who manufactures the BRG-4410 bearing?",
+      "expected": [],
+      "retrieved": [
+        "DOC-09",
+        "DOC-06",
+        "DOC-04"
+      ],
+      "top_score": 0.7401803731918335,
+      "abstained": false,
+      "answerable": false
+    },
+    {
+      "id": "U04",
+      "category": "abstention",
+      "question": "What is the operating humidity range for the F-30 fan?",
+      "expected": [],
+      "retrieved": [
+        "DOC-06",
+        "DOC-05",
+        "DOC-03"
+      ],
+      "top_score": 0.5302860736846924,
+      "abstained": false,
+      "answerable": false
+    },
+    {
+      "id": "U05",
+      "category": "abstention",
+      "question": "What network protocol does the controller use for field device communication?",
+      "expected": [],
+      "retrieved": [
+        "DOC-08",
+        "DOC-16",
+        "DOC-02"
+      ],
+      "top_score": 0.42798614501953125,
+      "abstained": true,
+      "answerable": false
+    },
+    {
+      "id": "U06",
+      "category": "abstention",
+      "question": "What is the noise level in decibels of the C-100 compressor?",
+      "expected": [],
+      "retrieved": [
+        "DOC-03",
+        "DOC-01",
+        "DOC-05"
+      ],
+      "top_score": 0.6214353442192078,
+      "abstained": false,
+      "answerable": false
+    },
+    {
+      "id": "U07",
+      "category": "abstention",
+      "question": "What is the weight of the P-200 pump?",
+      "expected": [],
+      "retrieved": [
+        "DOC-01",
+        "DOC-02",
+        "DOC-03"
+      ],
+      "top_score": 0.6357924938201904,
+      "abstained": false,
+      "answerable": false
+    },
+    {
+      "id": "U08",
+      "category": "abstention",
+      "question": "What lubricant is recommended for the M-50 motor?",
+      "expected": [],
+      "retrieved": [
+        "DOC-04",
+        "DOC-09",
+        "DOC-01"
+      ],
+      "top_score": 0.507034420967102,
+      "abstained": false,
+      "answerable": false
+    },
+    {
+      "id": "U09",
+      "category": "abstention",
+      "question": "What is the IP protection rating of the F-30 fan?",
+      "expected": [],
+      "retrieved": [
+        "DOC-06",
+        "DOC-05",
+        "DOC-04"
+      ],
+      "top_score": 0.5466015338897705,
+      "abstained": false,
+      "answerable": false
+    },
+    {
+      "id": "U10",
+      "category": "abstention",
+      "question": "What is the expected service life of the C-100 compressor?",
+      "expected": [],
+      "retrieved": [
+        "DOC-03",
+        "DOC-12",
+        "DOC-02"
+      ],
+      "top_score": 0.6184470653533936,
+      "abstained": false,
+      "answerable": false
+    }
+  ]
+}

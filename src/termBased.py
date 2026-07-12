@@ -105,9 +105,11 @@ def build_baseline_system(corpus_path):
     vectors = np.asarray(vectors, dtype="float32")
     vectors = vectors / np.linalg.norm(vectors, axis=1, keepdims=True)
     # print(chunks)
-    def reranker(query, retrieved_docs, top_k=8):
+    def reranker(query, bm25, top_k=8):
         """Return list of (doc_id, score, text) ranked by descending score,
         deduplicated by doc_id."""
+        # print(query)
+        retrieved_docs = bm25(query)
         q = model.encode([query])[0].astype("float32")
         q = q / np.linalg.norm(q)
         retrieved_doc_ids = {doc_id for doc_id, score in retrieved_docs}
@@ -115,7 +117,7 @@ def build_baseline_system(corpus_path):
             idx for idx, chunk in enumerate(chunks)
             if chunk["doc_id"] in retrieved_doc_ids
         ]        
-        print(f"Candidate indices for query '{query}': {candidate_indices}")
+        # print(f"Candidate indices for query '{query}': {candidate_indices}")
         filtered_chunks = [chunks[idx] for idx in candidate_indices]
         sims = vectors[candidate_indices] @ q
 
@@ -135,7 +137,30 @@ def build_baseline_system(corpus_path):
                 break
         return results
 
-    return reranker , build_time
+    def retrieve(query, top_k=5):
+        """Return list of (doc_id, score, text) ranked by descending score,
+        deduplicated by doc_id."""
+        q = model.encode([query])[0].astype("float32")
+        q = q / np.linalg.norm(q)
+        sims = vectors @ q
+
+        # Sort all chunks by score descending
+        order = np.argsort(-sims)
+
+        # Deduplicate by doc_id — keep only the highest-scoring chunk per doc
+        seen_docs = set()
+        results = []
+        for idx in order:
+            doc_id = chunks[idx]["doc_id"].split("_s_")[0]  # remove sentence suffix for deduplication
+            if doc_id in seen_docs:
+                continue
+            seen_docs.add(doc_id)
+            results.append((doc_id, float(sims[idx]), chunks[idx]["text"]))
+            if len(results) >= top_k:
+                break
+        return results
+    return reranker ,retrieve, build_time
+
 
 def compute_idf(inverted_index, total_docs):
     idf = {}
@@ -176,12 +201,12 @@ if __name__ == "__main__":
     inverted_index = index_builder.build(corpus)
     total_docs = len(corpus)
     idf = compute_idf(inverted_index, total_docs)
-    reranker ,_ = build_baseline_system(CORPUS_PATH)
+    reranker ,_,_ = build_baseline_system(CORPUS_PATH)
     # Example query
     query = "What is the rated output of the C-100 compressor?"
     query_terms = tokenizer.tokenize(query)
     # Compute BM25 scores for each document
-    scores = compute_bm25_score(query, index_builder, inverted_index, idf, index_builder.doc_lengths, index_builder.avgdl,tokenizer=tokenizer, top_k=5)
-    reranker_results = reranker(query, scores, top_k=8)
+    bm25 = lambda q: compute_bm25_score(q, index_builder, inverted_index, idf, index_builder.doc_lengths, index_builder.avgdl, tokenizer=tokenizer, top_k=5)
+    reranker_results = reranker(query, bm25, top_k=8)
     print(f"Reranker results for query '{query}':", reranker_results)
     # print(f"BM25 scores for query '{query}':", scores)

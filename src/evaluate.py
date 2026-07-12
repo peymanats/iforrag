@@ -27,7 +27,7 @@ import sys
 import numpy as np
 import re
 import time
-from termBased import Tokenizer, IndexBuilder, InvertedIndex, compute_idf, compute_bm25_score
+from termBased import Tokenizer, IndexBuilder, InvertedIndex, compute_idf, compute_bm25_score ,build_baseline_system, load_corpus
 # ──────────────────────────────────────────────
 # Paths
 # ──────────────────────────────────────────────
@@ -42,29 +42,29 @@ if PROJECT_ROOT not in sys.path:
 # ──────────────────────────────────────────────
 # Data loading
 # ──────────────────────────────────────────────
-def split_sentences_punctuation(text):
-    """
-    Splits text into sentences using punctuation marks.
+# def split_sentences_punctuation(text):
+#     """
+#     Splits text into sentences using punctuation marks.
     
-    Parameters:
-    text (str): The input text to be split.
+#     Parameters:
+#     text (str): The input text to be split.
     
-    Returns:
-    list: A list of sentences.
-    """
-    # Regular expression to split sentences based on punctuation marks
-    sentences = re.split(r'(?<=[.!?]) +', text)
-    return sentences
+#     Returns:
+#     list: A list of sentences.
+#     """
+#     # Regular expression to split sentences based on punctuation marks
+#     sentences = re.split(r'(?<=[.!?]) +', text)
+#     return sentences
 
 
-def load_corpus(path):
-    docs = []
-    with open(path, encoding="utf-8") as f:
-        for line in f:
-            line = line.strip()
-            if line:
-                docs.append(json.loads(line))
-    return docs
+# def load_corpus(path):
+#     docs = []
+#     with open(path, encoding="utf-8") as f:
+#         for line in f:
+#             line = line.strip()
+#             if line:
+#                 docs.append(json.loads(line))
+#     return docs
 
 def load_eval(path):
     questions = []
@@ -75,60 +75,60 @@ def load_eval(path):
                 questions.append(json.loads(line))
     return questions
 
-# ──────────────────────────────────────────────
-# Baseline retrieval wrapper
-# ──────────────────────────────────────────────
-#
-# The baseline (baseline_rag.py) returns only the single best chunk via
-# argmax. To compute Hit-Rate@k and MRR we need the full ranked list, so
-# we replicate its scoring (cosine similarity on MiniLM embeddings over
-# 400-char chunks) but return top-k instead of just the top-1.
+# # ──────────────────────────────────────────────
+# # Baseline retrieval wrapper
+# # ──────────────────────────────────────────────
+# #
+# # The baseline (baseline_rag.py) returns only the single best chunk via
+# # argmax. To compute Hit-Rate@k and MRR we need the full ranked list, so
+# # we replicate its scoring (cosine similarity on MiniLM embeddings over
+# # 400-char chunks) but return top-k instead of just the top-1.
 
-def build_baseline_system(corpus_path):
-    """Build the baseline index and return a retrieve(query, top_k) function."""
-    from baseline_rag import load_docs, chunk_text, EMBED_MODEL, CHUNK_SIZE
-    from sentence_transformers import SentenceTransformer
+# def build_baseline_system(corpus_path):
+#     """Build the baseline index and return a retrieve(query, top_k) function."""
+#     from baseline_rag import load_docs, chunk_text, EMBED_MODEL, CHUNK_SIZE
+#     from sentence_transformers import SentenceTransformer
 
-    docs = load_docs(corpus_path)
-    model = SentenceTransformer(EMBED_MODEL)
+#     docs = load_docs(corpus_path)
+#     model = SentenceTransformer(EMBED_MODEL)
 
-    # Build chunks (same as baseline)
-    chunks = []
-    start = time.time()
-    for d in docs:
-        for sent_num, c in enumerate(split_sentences_punctuation(d["text"])):
-            chunks.append({"doc_id": d["id"] + f"_s_{sent_num}", "title": d["title"], "text": f"Title: {d['title']}\n{c}"})
-    # Encode and normalize (same as baseline)
-    vectors = model.encode([c["text"] for c in chunks])
-    end = time.time()
-    build_time = (end -start)/len(docs)
-    vectors = np.asarray(vectors, dtype="float32")
-    vectors = vectors / np.linalg.norm(vectors, axis=1, keepdims=True)
+#     # Build chunks (same as baseline)
+#     chunks = []
+#     start = time.time()
+#     for d in docs:
+#         for sent_num, c in enumerate(split_sentences_punctuation(d["text"])):
+#             chunks.append({"doc_id": d["id"] + f"_s_{sent_num}", "title": d["title"], "text": f"Title: {d['title']}\n{c}"})
+#     # Encode and normalize (same as baseline)
+#     vectors = model.encode([c["text"] for c in chunks])
+#     end = time.time()
+#     build_time = (end -start)/len(docs)
+#     vectors = np.asarray(vectors, dtype="float32")
+#     vectors = vectors / np.linalg.norm(vectors, axis=1, keepdims=True)
 
-    def retrieve(query, top_k=5):
-        """Return list of (doc_id, score, text) ranked by descending score,
-        deduplicated by doc_id."""
-        q = model.encode([query])[0].astype("float32")
-        q = q / np.linalg.norm(q)
-        sims = vectors @ q
+#     def retrieve(query, top_k=5):
+#         """Return list of (doc_id, score, text) ranked by descending score,
+#         deduplicated by doc_id."""
+#         q = model.encode([query])[0].astype("float32")
+#         q = q / np.linalg.norm(q)
+#         sims = vectors @ q
 
-        # Sort all chunks by score descending
-        order = np.argsort(-sims)
+#         # Sort all chunks by score descending
+#         order = np.argsort(-sims)
 
-        # Deduplicate by doc_id — keep only the highest-scoring chunk per doc
-        seen_docs = set()
-        results = []
-        for idx in order:
-            doc_id = chunks[idx]["doc_id"].split("_s_")[0]  # remove sentence suffix for deduplication
-            if doc_id in seen_docs:
-                continue
-            seen_docs.add(doc_id)
-            results.append((doc_id, float(sims[idx]), chunks[idx]["text"]))
-            if len(results) >= top_k:
-                break
-        return results
+#         # Deduplicate by doc_id — keep only the highest-scoring chunk per doc
+#         seen_docs = set()
+#         results = []
+#         for idx in order:
+#             doc_id = chunks[idx]["doc_id"].split("_s_")[0]  # remove sentence suffix for deduplication
+#             if doc_id in seen_docs:
+#                 continue
+#             seen_docs.add(doc_id)
+#             results.append((doc_id, float(sims[idx]), chunks[idx]["text"]))
+#             if len(results) >= top_k:
+#                 break
+#         return results
 
-    return retrieve , build_time
+#     return retrieve , build_time
 
 # ──────────────────────────────────────────────
 # Metrics
@@ -368,11 +368,11 @@ def print_report(metrics, system_name):
 
 def main():
     parser = argparse.ArgumentParser(description="Evaluate RAG retrieval.")
-    parser.add_argument("--system", choices=["baseline", "improved"],
-                        default="bm25", help="Which system to evaluate")
+    parser.add_argument("--system", choices=["retriever", "bm25", "reranker"],
+                        default="reranker", help="Which system to evaluate")
     parser.add_argument("--verbose", action="store_true",
                         help="Print per-question results")
-    parser.add_argument("--threshold", type=float, default=0,
+    parser.add_argument("--threshold", type=float, default=0.5,
                         help="Abstention threshold: if top-1 score < this, "
                              "abstain. 0.0 = no abstention (pure baseline).")
     parser.add_argument("--corpus", default=CORPUS_PATH,
@@ -384,9 +384,9 @@ def main():
     questions = load_eval(args.eval)
     print(f"Loaded {len(questions)} evaluation questions from {args.eval}")
 
-    if args.system == "baseline":
+    if args.system == "retriever":
         print("Building baseline index (sentence-transformers MiniLM)...")
-        retrieve_fn, build_time = build_baseline_system(args.corpus)
+        _,retrieve_fn, build_time = build_baseline_system(args.corpus)
     elif args.system == "bm25":
         tokenizer = Tokenizer()
         index_builder = IndexBuilder(tokenizer)
@@ -407,9 +407,34 @@ def main():
             index_builder.doc_lengths,
             index_builder.avgdl,
             tokenizer=tokenizer,
-            top_k=5,
+            top_k=8,
         )        # Improved system will be added in a later step
+    elif args.system == "reranker":
+        tokenizer = Tokenizer()
+        index_builder = IndexBuilder(tokenizer)
 
+        # Load your corpus here (list of documents)
+        corpus = load_corpus(args.corpus)
+        start = time.time()
+        inverted_index = index_builder.build(corpus)
+        end =  time.time()
+        bm25_build_time = (end - start) / len(corpus)
+        total_docs = len(corpus)
+        idf = compute_idf(inverted_index, total_docs)
+        reranker ,_,reranker_build_time = build_baseline_system(args.corpus)
+        build_time = bm25_build_time + reranker_build_time
+        print(f"create func for bm25")
+        bm_25 = lambda query: compute_bm25_score(
+            query,
+            index_builder,
+            inverted_index,
+            idf,
+            index_builder.doc_lengths,
+            index_builder.avgdl,
+            tokenizer=tokenizer,
+            top_k=8,
+        )
+        retrieve_fn = lambda query: reranker(query, bm_25, top_k=8)
 
     if args.threshold > 0:
         print(f"Abstention threshold enabled: score < {args.threshold} -> abstain")
