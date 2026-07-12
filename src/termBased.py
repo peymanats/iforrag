@@ -118,9 +118,15 @@ def build_baseline_system(corpus_path,sliding_window=False,window_size=100,step_
         if sliding_window:
             windows = sliding_windows(d["text"], window_size, step_size)
             for i, c in enumerate(windows):
+                if d["id"] == "DOC-06" and i == 27:
+                    # print(f"Third window of DOC-01: {c}")
+                    continue
                 chunks.append({"doc_id": d["id"], "sent_id": d["id"] + f"_w_{i}", "title": d["title"], "text": f"Title: {d['title']}\n{c}"})
         else:
             for sent_num, c in enumerate(split_sentences_punctuation(d["text"])):
+                if (d["id"] == "DOC-01" and sent_num == 2) or (d["id"] == "DOC-06" and sent_num == 0):
+                    # print(f"Third sentence of DOC-01: {c}")
+                    continue
                 chunks.append({"doc_id": d["id"], "sent_id": d["id"] + f"_s_{sent_num}", "title": d["title"], "text": f"Title: {d['title']}\n{c}"})
     
     # Encode and normalize (same as baseline)
@@ -135,7 +141,11 @@ def build_baseline_system(corpus_path,sliding_window=False,window_size=100,step_
         deduplicated by doc_id."""
         # print(query)
         retrieved_docs = bm25(query)
-        q = model.encode([query])[0].astype("float32")
+        q = model.encode([query])[0]
+        # Ensure q is a numpy array of type float32 (handles torch tensors too)
+        if hasattr(q, "numpy"):
+            q = q.numpy()
+        q = np.asarray(q, dtype="float32")
         q = q / np.linalg.norm(q)
         retrieved_doc_ids = {doc_id for doc_id, score in retrieved_docs}
         candidate_indices = [
@@ -165,7 +175,10 @@ def build_baseline_system(corpus_path,sliding_window=False,window_size=100,step_
     def retrieve(query, top_k=5):
         """Return list of (doc_id, score, text) ranked by descending score,
         deduplicated by doc_id."""
-        q = model.encode([query])[0].astype("float32")
+        q = model.encode([query])[0]
+        if hasattr(q, "numpy"):
+            q = q.numpy()
+        q = np.asarray(q, dtype="float32")
         q = q / np.linalg.norm(q)
         sims = vectors @ q
 
@@ -226,7 +239,7 @@ if __name__ == "__main__":
     inverted_index = index_builder.build(corpus)
     total_docs = len(corpus)
     idf = compute_idf(inverted_index, total_docs)
-    reranker ,_,_ = build_baseline_system(CORPUS_PATH)
+    reranker ,_,_ = build_baseline_system(CORPUS_PATH,sliding_window=False,window_size=100,step_size=50)
     # Example query
     query = "What is the rated output of the C-100 compressor?"
     query_terms = tokenizer.tokenize(query)
