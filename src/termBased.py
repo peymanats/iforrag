@@ -75,6 +75,25 @@ def split_sentences_punctuation(text):
     sentences = re.split(r'(?<=[.!?]) +', text)
     return sentences
 
+def sliding_windows(text, window_size=100, step_size=50):
+    """
+    Splits text into overlapping windows of a specified size.
+    
+    Parameters:
+    text (str): The input text to be split.
+    window_size (int): The size of each window.
+    step_size (int): The step size for sliding the window.
+    
+    Returns:
+    list: A list of text windows.
+    """
+    windows = []
+    for start in range(0, len(text), step_size):
+        end = start + window_size
+        windows.append(text[start:end])
+        if end >= len(text):
+            break
+    return windows
 
 def load_corpus(path):
     docs = []
@@ -85,7 +104,7 @@ def load_corpus(path):
                 docs.append(json.loads(line))
     return docs
 
-def build_baseline_system(corpus_path):
+def build_baseline_system(corpus_path,sliding_window=False,window_size=100,step_size=50):
     """Build the baseline index and return a retrieve(query, top_k) function."""
     from sentence_transformers import SentenceTransformer
 
@@ -96,8 +115,14 @@ def build_baseline_system(corpus_path):
     chunks = []
     start = time.time()
     for d in docs:
-        for sent_num, c in enumerate(split_sentences_punctuation(d["text"])):
-            chunks.append({"doc_id": d["id"], "sent_id": d["id"] + f"_s_{sent_num}", "title": d["title"], "text": f"Title: {d['title']}\n{c}"})
+        if sliding_window:
+            windows = sliding_windows(d["text"], window_size, step_size)
+            for i, c in enumerate(windows):
+                chunks.append({"doc_id": d["id"], "sent_id": d["id"] + f"_w_{i}", "title": d["title"], "text": f"Title: {d['title']}\n{c}"})
+        else:
+            for sent_num, c in enumerate(split_sentences_punctuation(d["text"])):
+                chunks.append({"doc_id": d["id"], "sent_id": d["id"] + f"_s_{sent_num}", "title": d["title"], "text": f"Title: {d['title']}\n{c}"})
+    
     # Encode and normalize (same as baseline)
     vectors = model.encode([c["text"] for c in chunks])
     end = time.time()

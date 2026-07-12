@@ -379,6 +379,12 @@ def main():
                         help="Path to corpus.jsonl")
     parser.add_argument("--eval", default=EVAL_PATH,
                         help="Path to eval.jsonl")
+    parser.add_argument("--sliding-window", action="store_true",default=True,
+                        help="Use sliding window approach for chunking")
+    parser.add_argument("--window-size", type=int, default=100,
+                        help="Size of each sliding window")
+    parser.add_argument("--step-size", type=int, default=50,
+                        help="Step size for sliding the window")
     args = parser.parse_args()
 
     questions = load_eval(args.eval)
@@ -386,7 +392,7 @@ def main():
 
     if args.system == "retriever":
         print("Building baseline index (sentence-transformers MiniLM)...")
-        _,retrieve_fn, build_time = build_baseline_system(args.corpus)
+        _,retrieve_fn, build_time = build_baseline_system(args.corpus, args.sliding_window, args.window_size, args.step_size)
     elif args.system == "bm25":
         tokenizer = Tokenizer()
         index_builder = IndexBuilder(tokenizer)
@@ -421,7 +427,7 @@ def main():
         bm25_build_time = (end - start) / len(corpus)
         total_docs = len(corpus)
         idf = compute_idf(inverted_index, total_docs)
-        reranker ,_,reranker_build_time = build_baseline_system(args.corpus)
+        reranker ,_,reranker_build_time = build_baseline_system(args.corpus, args.sliding_window, args.window_size, args.step_size)
         build_time = bm25_build_time + reranker_build_time
         print(f"create func for bm25")
         bm_25 = lambda query: compute_bm25_score(

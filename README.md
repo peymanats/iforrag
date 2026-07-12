@@ -33,3 +33,9 @@ i also implement reranker that first bm25 retrieve top 8 candidates_docs then re
 ![score distribution](results\sentences_chunking_title\score_distribution.png)
 
 ![confusion matrix](results\sentences_chunking_title\confusion_matrix.png)
+
+i added sliding window chunking and test it on both only semantic search and reranking the result shows that the sentence is still better but in reranking the sliding windows works better in answerable questions. 
+
+![score distribution](results\reranker_sliding_100_50\score_distribution.png)
+
+![confusion matrix](results\reranker_sliding_100_50\confusion_matrix.png)
