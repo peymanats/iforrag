@@ -44,7 +44,12 @@ Simply prefixing the document title to each sentence chunk boosted the similarit
 
 ## 4. Term-Based Search (BM25) & Reranking Trials
 
-The term-based BM25 search algorithm performed well on our data for answerable questions. Because the **Recall@3 of BM25 reached 100%**, we can be confident that the correct document is within the top-5 results. 
+The term-based BM25 search algorithm performed well on our data for answerable questions. Because the **Recall@3 of BM25 reached 100%**, we can be confident that the correct document is within the top-5 results.
+
+### Latency Profiling:
+To monitor operational efficiency across different retrieval setups, we integrated execution time tracking to measure both:
+* **Index Construction Speed (`build_time`)**
+* **Query Execution/Retrieval Latency**
 
 ### Reranking Implementation:
 We implemented a two-stage reranker:
