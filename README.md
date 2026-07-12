@@ -1,87 +1,90 @@
-# RAG Retrieval Pipeline: Diagnostics & Optimization
+# Pipeline Diagnostics & Optimization Log
 
-This document outlines the diagnostic steps, structural improvements, and evaluation results for the RAG retrieval pipeline. The goal is to address document-level extraction challenges, isolate unanswerable queries, handle data duplication/conflicts, and calibrate retrieval thresholds for production generalizability.
+## 1. Running the Baseline
 
----
+After running the baseline, the results show that the baseline does not support unanswerable questions and retrieves the entire document even when only a specific answer is needed. 
 
-## 1. Baseline Assessment & Challenges
+### Initial Goals:
+* Add support for unanswerable questions by introducing similarity thresholds.
+* Improve chunking so the system can return answers that are more specifically relevant to the query.
+* Generate an evaluation dataset (created using **GLM-5.2**).
 
-The initial baseline retrieval system suffered from two primary design limitations:
-1. **Lack of support for unanswerable queries**: The system always returned a document, even when the query was out-of-domain or unanswerable, leading to high false-positive rates.
-2. **Coarse-grained retrieval**: The system retrieved entire documents instead of extracting targeted, specific passages relevant to the query.
-
-To establish a diagnostic benchmark, an evaluation dataset was generated using GLM-5.2. 
-
-### Threshold Calibration Trial
-An initial baseline evaluation was conducted by applying a static similarity threshold of `0.5`. The distribution of similarity scores revealed a major issue: similarity scores for answerable and unanswerable queries overlapped significantly. As a result, no single threshold could effectively isolate unanswerable questions without causing high rates of false positives or false negatives.
+After adding a threshold of `0.5` to the baseline and evaluating, the main issue identified is when a question is unanswerable but the model returns a document anyway, resulting in false positives. As shown in the score distribution plot below, there is no single threshold that can cleanly separate answerable and unanswerable queries.
 
 ![score distribution](results/baseline_tresh/score_distribution.png)
 ![confusion matrix](results/baseline_tresh/confusion_matrix.png)
 
-This overlap occurred because whole-document contexts are highly generalized. Even an unrelated or out-of-domain query can yield a high cosine similarity score when matched against a broad, multi-topic document.
+> **Diagnostic Hypothesis:** The chunk contexts are too general and lack specificity. Consequently, any query that points even slightly toward the general topic receives a high similarity score, even if it is unrelated.
 
 ---
 
-## 2. Sentence-Level Chunking & Context Enhancement
+## 2. Sentence Chunking Strategy
 
-To improve specificity, the retrieval unit was shifted from whole documents to individual sentences. 
+To address the context specificity issue, we implemented a sentence chunking strategy. During evaluation, we mapped the retrieved sentences back to their parent document IDs (`doc_id`) to match the ground truth.
 
-### Sentence Chunking
-Evaluating the system with sentence-level chunks (while mapping retrieved sentences back to their parent document IDs) yielded a **3% improvement in Recall@1 and Recall@3**. 
+### Key Results:
+* **Recall@1 and Recall@3** improved by **3%**.
+* The minimum similarity scores of unanswerable samples increased by approximately `0.1`.
 
-However, the minimum similarity scores for unanswerable queries also shifted upward by approximately `0.1`, keeping the overall overlap high.
+Below are the distribution and confusion matrix plots for this experiment:
 
 ![score distribution](results/sentence_chunking/score_distribution.png)
 ![confusion matrix](results/sentence_chunking/confusion_matrix.png)
 
-### Metadata Integration (Title Prefixing)
-To reinforce context without losing specificity, the parent document title was prefixed to each sentence chunk. 
+---
 
-This adjustment boosted the similarity scores of True Positive (answerable) samples. By elevating the scores of valid matches, a clear separation emerged. Applying a threshold of approximately `0.7` separated answerable and unanswerable queries with far fewer false positives.
+## 3. Metadata Enrichment: Sentence Chunking with Titles
+
+Simply prefixing the document title to each sentence chunk boosted the similarity scores of the True Positive (TP) samples. With this modification and a threshold of approximately `0.7`, unanswerable questions can be approximately separated from answerable ones.
 
 ![score distribution](results/sentences_chunking_title/score_distribution.png)
 ![confusion matrix](results/sentences_chunking_title/confusion_matrix.png)
 
 ---
 
-## 3. Hybrid Retrieval & Reranking Experiments
+## 4. Term-Based Search (BM25) & Reranking Trials
 
-Term-based search (BM25) proved highly effective for keyword-focused, answerable queries, achieving a **Recall@3 of 100%** during testing. Because of this high candidate capture rate, we integrated BM25 as a first-stage retriever and a semantic model as a second-stage reranker.
+The term-based BM25 search algorithm performed well on our data for answerable questions. Because the **Recall@3 of BM25 reached 100%**, we can be confident that the correct document is within the top-5 results. 
 
-### Reranking Pipeline
-The pipeline was structured to first retrieve the top 8 candidate documents via BM25, and then rerank their constituent sentences using cosine similarity from embedding models. 
+### Reranking Implementation:
+We implemented a two-stage reranker:
+1. Retrieve the top 8 candidate documents using BM25.
+2. Rerank the sentence chunks within those 8 documents using cosine similarity of their embeddings.
 
-* **Observations**: This specific reranking setup did not yield a notable performance improvement.
-* **Hybrid Blending**: Standard hybrid merging techniques, such as Reciprocal Rank Fusion (RRF), were bypassed. While RRF can improve edge-case queries (such as error code lookups), it does not natively help filter out unanswerable queries, which remains our primary bottleneck.
+**Result:** No significant performance improvement was observed. 
+
+> **Design Decision:** Moving to hybrid search methods like Reciprocal Rank Fusion (RRF) may not be the best choice here, as they have little impact on filtering out unanswerable questions (though they might provide minor improvements on error-code queries). Instead, we prefer focusing on improving context using metadata and semantic search alone.
 
 ---
 
-## 4. Chunking Variations: Sentence vs. Sliding Window
+## 5. Duplicate and Conflict Detection
 
-We compared sentence-level chunking against a sliding window approach (using a window size of 100 and a step size of 50) across both pure semantic search and the hybrid reranker pipeline.
+We created a diagnostic notebook, `near_duplicate.ipynb`, to detect similar sentences within the corpus to catch potential duplicates and knowledge conflicts:
+
+* **Knowledge Conflicts:** Identified between `DOC-02_s_2` and `DOC-01_s_2`.
+* **Knowledge Duplication:** Identified between `DOC-05_s_0` and `DOC-06_s_0`.
+
+---
+
+## 6. Sliding Window Chunking Experiment
+
+We implemented sliding window chunking and tested it under both pure semantic search and the hybrid reranking setup.
 
 ### Findings:
-* **For Semantic Search**: Sentence-level chunking retained superior separation between answerable and unanswerable questions.
-* **For Reranking**: The sliding window configuration proved more robust for answerable queries, capturing broader context boundaries before the reranking stage.
+* For pure semantic search, sentence-level chunking still yields better overall separation.
+* For the reranking pipeline, the sliding window approach performs better on answerable queries.
 
 ![score distribution](results/reranker_sliding_100_50/score_distribution.png)
 ![confusion matrix](results/reranker_sliding_100_50/confusion_matrix.png)
 
 ---
 
-## 5. Duplicate Detection & Knowledge Conflicts
+## 7. Threshold Calibration & Generalizability Validation
 
-Using `near_duplicate.ipynb`, sentence-level embeddings were analyzed to flag redundant passages and logical contradictions within the corpus. This diagnostic step highlighted issues to address in future data cleaning:
+After testing different thresholds and sliding window parameters, the semantic retriever alone configured with a threshold of `0.65` achieved **85% accuracy** on our validation dataset. 
 
-* **Knowledge Conflicts**: Logical contradictions or conflicting information were identified between `DOC-02_s_2` and `DOC-01_s_2`.
-* **Knowledge Duplication**: Redundant, near-identical content was flagged between `DOC-05_s_0` and `DOC-06_s_0`.
+To test the generalizability of this model, we evaluated it against an unseen test dataset of 100 samples.
 
----
-
-## 6. Generalizability & Test Set Validation
-
-On the validation dataset, a pure semantic retriever calibrated with a `0.65` threshold achieved **85% accuracy**. 
-
-To evaluate how well this threshold generalizes to unseen data, a separate test dataset of 100 out-of-domain samples was compiled. When tested on these unseen samples, the accuracy dropped to **65%**. 
-
-This performance drop confirms that a static global threshold is highly sensitive to distribution shifts. Relying on a single threshold value is insufficient for reliably isolating unanswerable queries across unseen datasets.
+### Generalizability Results:
+* **Accuracy on unseen test samples:** Dropped to **65%**.
+* **Conclusion:** On unseen data, the semantic retriever with a static `0.65` threshold struggles to make correct decisions. This demonstrates that a single fixed threshold is highly vulnerable to distribution shifts and cannot cleanly separate unanswerable questions on unseen data.
