@@ -34,37 +34,12 @@ from termBased import Tokenizer, IndexBuilder, InvertedIndex, compute_idf, compu
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CORPUS_PATH = os.path.join(PROJECT_ROOT, "data", "raw", "corpus.jsonl")
 EVAL_PATH = os.path.join(PROJECT_ROOT, "data", "eval", "eval.jsonl")
+TEST_PATH = os.path.join(PROJECT_ROOT, "data", "test", "test.jsonl")
 
 # Make project root importable (so we can import baseline_rag)
 if PROJECT_ROOT not in sys.path:
     sys.path.insert(0, PROJECT_ROOT)
 
-# ──────────────────────────────────────────────
-# Data loading
-# ──────────────────────────────────────────────
-# def split_sentences_punctuation(text):
-#     """
-#     Splits text into sentences using punctuation marks.
-    
-#     Parameters:
-#     text (str): The input text to be split.
-    
-#     Returns:
-#     list: A list of sentences.
-#     """
-#     # Regular expression to split sentences based on punctuation marks
-#     sentences = re.split(r'(?<=[.!?]) +', text)
-#     return sentences
-
-
-# def load_corpus(path):
-#     docs = []
-#     with open(path, encoding="utf-8") as f:
-#         for line in f:
-#             line = line.strip()
-#             if line:
-#                 docs.append(json.loads(line))
-#     return docs
 
 def load_eval(path):
     questions = []
@@ -74,61 +49,6 @@ def load_eval(path):
             if line:
                 questions.append(json.loads(line))
     return questions
-
-# # ──────────────────────────────────────────────
-# # Baseline retrieval wrapper
-# # ──────────────────────────────────────────────
-# #
-# # The baseline (baseline_rag.py) returns only the single best chunk via
-# # argmax. To compute Hit-Rate@k and MRR we need the full ranked list, so
-# # we replicate its scoring (cosine similarity on MiniLM embeddings over
-# # 400-char chunks) but return top-k instead of just the top-1.
-
-# def build_baseline_system(corpus_path):
-#     """Build the baseline index and return a retrieve(query, top_k) function."""
-#     from baseline_rag import load_docs, chunk_text, EMBED_MODEL, CHUNK_SIZE
-#     from sentence_transformers import SentenceTransformer
-
-#     docs = load_docs(corpus_path)
-#     model = SentenceTransformer(EMBED_MODEL)
-
-#     # Build chunks (same as baseline)
-#     chunks = []
-#     start = time.time()
-#     for d in docs:
-#         for sent_num, c in enumerate(split_sentences_punctuation(d["text"])):
-#             chunks.append({"doc_id": d["id"] + f"_s_{sent_num}", "title": d["title"], "text": f"Title: {d['title']}\n{c}"})
-#     # Encode and normalize (same as baseline)
-#     vectors = model.encode([c["text"] for c in chunks])
-#     end = time.time()
-#     build_time = (end -start)/len(docs)
-#     vectors = np.asarray(vectors, dtype="float32")
-#     vectors = vectors / np.linalg.norm(vectors, axis=1, keepdims=True)
-
-#     def retrieve(query, top_k=5):
-#         """Return list of (doc_id, score, text) ranked by descending score,
-#         deduplicated by doc_id."""
-#         q = model.encode([query])[0].astype("float32")
-#         q = q / np.linalg.norm(q)
-#         sims = vectors @ q
-
-#         # Sort all chunks by score descending
-#         order = np.argsort(-sims)
-
-#         # Deduplicate by doc_id — keep only the highest-scoring chunk per doc
-#         seen_docs = set()
-#         results = []
-#         for idx in order:
-#             doc_id = chunks[idx]["doc_id"].split("_s_")[0]  # remove sentence suffix for deduplication
-#             if doc_id in seen_docs:
-#                 continue
-#             seen_docs.add(doc_id)
-#             results.append((doc_id, float(sims[idx]), chunks[idx]["text"]))
-#             if len(results) >= top_k:
-#                 break
-#         return results
-
-#     return retrieve , build_time
 
 # ──────────────────────────────────────────────
 # Metrics
@@ -259,8 +179,8 @@ def evaluate(retrieve_fn, questions, verbose=False, abstain_threshold=0.7):
                   f"got={results[0][0] if results else 'none'}  "
                   f"score={top_score:.3f}"
                   f"{'  <ABSTAIN' if abstained else ''}")
-
     n_unans = len(unanswerable)
+    accuracy = (hit1 + correct_abstain)/(n_ans + n_unans)
     abstention_rate = correct_abstain / n_unans if n_unans else 0.0
     fabrication_rate = (n_unans - correct_abstain) / n_unans if n_unans else 0.0
 
@@ -296,6 +216,7 @@ def evaluate(retrieve_fn, questions, verbose=False, abstain_threshold=0.7):
         "max_score_unanswerable": float(np.max(unans_scores)),
         "per_category": categories,
         "per_question": per_question,
+        "accuracy": accuracy,
     },retrieve_time
 
 # ──────────────────────────────────────────────
@@ -355,6 +276,8 @@ def print_report(metrics, system_name):
         print(f"                   Score ranges overlap — threshold-based abstention")
         print(f"                   alone will not cleanly separate the two sets.")
     print()
+    print("  ──accuracy──: ",metrics["accuracy"])
+    print()
     print("  ── Per-Category Breakdown (Hit-Rate@1) ──")
     for cat, vals in sorted(metrics["per_category"].items()):
         rate = vals["hit1"] / vals["total"] if vals["total"] else 0
@@ -372,7 +295,7 @@ def main():
                         default="reranker", help="Which system to evaluate")
     parser.add_argument("--verbose", action="store_true",
                         help="Print per-question results")
-    parser.add_argument("--threshold", type=float, default=0.5,
+    parser.add_argument("--threshold", type=float, default=0.65,
                         help="Abstention threshold: if top-1 score < this, "
                              "abstain. 0.0 = no abstention (pure baseline).")
     parser.add_argument("--corpus", default=CORPUS_PATH,
@@ -389,6 +312,8 @@ def main():
 
     questions = load_eval(args.eval)
     print(f"Loaded {len(questions)} evaluation questions from {args.eval}")
+
+    build_time = 0.0
 
     if args.system == "retriever":
         print("Building baseline index (sentence-transformers MiniLM)...")
@@ -441,6 +366,8 @@ def main():
             top_k=8,
         )
         retrieve_fn = lambda query: reranker(query, bm_25, top_k=8)
+    else:
+        raise ValueError(f"Unknown system: {args.system}")
 
     if args.threshold > 0:
         print(f"Abstention threshold enabled: score < {args.threshold} -> abstain")
