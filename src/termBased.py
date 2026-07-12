@@ -3,7 +3,7 @@ from collections import Counter
 import numpy as np
 import json
 
-from evaluate import CORPUS_PATH, load_corpus
+# from evaluate import CORPUS_PATH, load_corpus
 
 class Tokenizer:
     def tokenize(self, text):
@@ -67,21 +67,26 @@ def compute_idf(inverted_index, total_docs):
         idf[term] = np.log((total_docs - df + 0.5) / (df + 0.5) + 1)
     return idf
 
-def compute_bm25_score(query_terms, doc_id, inverted_index, idf, doc_lengths, avgdl, k1=1.5, b=0.75):
-    score = 0.0
-    doc_length = doc_lengths[doc_id]
+def compute_bm25_score(query, index_builder,inverted_index, idf, doc_lengths, avgdl, k1=1.5, b=0.75,tokenizer=None,top_k=5):
+    query_terms = tokenizer.tokenize(query) if tokenizer else query
+    scores={}
+    # score = 0.0
+    for doc_id in index_builder.documents.keys():
+        doc_length = doc_lengths[doc_id]
+        score = 0.0
+        for term in query_terms:
+            if term in inverted_index:
+                postings = inverted_index[term]
+                if doc_id in postings:
+                    tf = postings[doc_id]
+                    idf_term = idf[term]
+                    numerator = tf * (k1 + 1)
+                    denominator = tf + k1 * (1 - b + b * (doc_length / avgdl))
+                    score += idf_term * (numerator / denominator)
+        scores[doc_id] = score
+    top_k = sorted(scores.items(), key=lambda x: x[1], reverse=True)[:top_k]
+    return top_k
 
-    for term in query_terms:
-        if term in inverted_index:
-            postings = inverted_index[term]
-            if doc_id in postings:
-                tf = postings[doc_id]
-                idf_term = idf[term]
-                numerator = tf * (k1 + 1)
-                denominator = tf + k1 * (1 - b + b * (doc_length / avgdl))
-                score += idf_term * (numerator / denominator)
-
-    return score
 
 if __name__ == "__main__":
     # Example usage
@@ -100,12 +105,8 @@ if __name__ == "__main__":
     query_terms = tokenizer.tokenize(query)
 
     # Compute BM25 scores for each document
-    scores = {}
-    for doc_id in index_builder.documents.keys():
-        score = compute_bm25_score(query_terms, doc_id, inverted_index, idf, index_builder.doc_lengths, index_builder.avgdl)
-        scores[doc_id] = score
 
-    top3 = sorted(scores.items(), key=lambda x: x[1], reverse=True)[:3]
 
-    for doc_id, score in top3:
-        print(f"Doc {doc_id}: {score:.4f}")
+    scores = compute_bm25_score(query, index_builder, inverted_index, idf, index_builder.doc_lengths, index_builder.avgdl,tokenizer=tokenizer, top_k=5)
+
+    print(f"BM25 scores for query '{query}':", scores)

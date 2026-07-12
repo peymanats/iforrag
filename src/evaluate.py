@@ -26,6 +26,8 @@ import os
 import sys
 import numpy as np
 import re
+import time
+from termBased import Tokenizer, IndexBuilder, InvertedIndex, compute_idf, compute_bm25_score
 # ──────────────────────────────────────────────
 # Paths
 # ──────────────────────────────────────────────
@@ -92,12 +94,14 @@ def build_baseline_system(corpus_path):
 
     # Build chunks (same as baseline)
     chunks = []
+    start = time.time()
     for d in docs:
         for sent_num, c in enumerate(split_sentences_punctuation(d["text"])):
             chunks.append({"doc_id": d["id"] + f"_s_{sent_num}", "title": d["title"], "text": f"Title: {d['title']}\n{c}"})
-
     # Encode and normalize (same as baseline)
     vectors = model.encode([c["text"] for c in chunks])
+    end = time.time()
+    build_time = (end -start)/len(docs)
     vectors = np.asarray(vectors, dtype="float32")
     vectors = vectors / np.linalg.norm(vectors, axis=1, keepdims=True)
 
@@ -124,7 +128,7 @@ def build_baseline_system(corpus_path):
                 break
         return results
 
-    return retrieve
+    return retrieve , build_time
 
 # ──────────────────────────────────────────────
 # Metrics
@@ -149,11 +153,14 @@ def evaluate(retrieve_fn, questions, verbose=False, abstain_threshold=0.7):
     ans_scores = []
     ans_false_abstain = 0   # answerable questions wrongly rejected by threshold
     per_question = []
-
+    retrieve_time = 0.0
     for q in answerable:
         expected = set(q["expected_docs"])
-        results = retrieve_fn(q["question"], top_k=5)
-        retrieved_docs = [doc_id for doc_id, _, _ in results]
+        start=time.time()
+        results = retrieve_fn(q["question"])
+        end=time.time()
+        retrieve_time += (end-start)
+        retrieved_docs = [result[0] for result in results]
         top_score = results[0][1] if results else 0.0
         ans_scores.append(top_score)
 
@@ -204,7 +211,8 @@ def evaluate(retrieve_fn, questions, verbose=False, abstain_threshold=0.7):
                   f"got={retrieved_docs[:3]}  "
                   f"score={top_score:.3f}"
                   f"{'  <ABSTAIN' if abstained else ''}")
-
+    
+    retrieve_time=retrieve_time/len(answerable) if len(answerable)>0 else 0.0
     n_ans = len(answerable)
     # Effective hit-rate: correct retrievals among answerable that were NOT
     # falsely abstained. A high threshold lowers effective hit-rate because
@@ -223,7 +231,7 @@ def evaluate(retrieve_fn, questions, verbose=False, abstain_threshold=0.7):
     correct_abstain = 0
 
     for q in unanswerable:
-        results = retrieve_fn(q["question"], top_k=5)
+        results = retrieve_fn(q["question"])
         top_score = results[0][1] if results else 0.0
         unans_scores.append(top_score)
 
@@ -288,7 +296,7 @@ def evaluate(retrieve_fn, questions, verbose=False, abstain_threshold=0.7):
         "max_score_unanswerable": float(np.max(unans_scores)),
         "per_category": categories,
         "per_question": per_question,
-    }
+    },retrieve_time
 
 # ──────────────────────────────────────────────
 # Reporting
@@ -361,10 +369,10 @@ def print_report(metrics, system_name):
 def main():
     parser = argparse.ArgumentParser(description="Evaluate RAG retrieval.")
     parser.add_argument("--system", choices=["baseline", "improved"],
-                        default="baseline", help="Which system to evaluate")
+                        default="bm25", help="Which system to evaluate")
     parser.add_argument("--verbose", action="store_true",
                         help="Print per-question results")
-    parser.add_argument("--threshold", type=float, default=0.5,
+    parser.add_argument("--threshold", type=float, default=0,
                         help="Abstention threshold: if top-1 score < this, "
                              "abstain. 0.0 = no abstention (pure baseline).")
     parser.add_argument("--corpus", default=CORPUS_PATH,
@@ -378,16 +386,35 @@ def main():
 
     if args.system == "baseline":
         print("Building baseline index (sentence-transformers MiniLM)...")
-        retrieve_fn = build_baseline_system(args.corpus)
-    else:
-        # Improved system will be added in a later step
-        print("ERROR: improved system not yet implemented.", file=sys.stderr)
-        sys.exit(1)
+        retrieve_fn, build_time = build_baseline_system(args.corpus)
+    elif args.system == "bm25":
+        tokenizer = Tokenizer()
+        index_builder = IndexBuilder(tokenizer)
+
+        # Load your corpus here (list of documents)
+        corpus = load_corpus(args.corpus)
+        start = time.time()
+        inverted_index = index_builder.build(corpus)
+        end =  time.time()
+        build_time = (end - start) / len(corpus)
+        total_docs = len(corpus)
+        idf = compute_idf(inverted_index, total_docs)
+        retrieve_fn = lambda query: compute_bm25_score(
+            query,
+            index_builder,
+            inverted_index,
+            idf,
+            index_builder.doc_lengths,
+            index_builder.avgdl,
+            tokenizer=tokenizer,
+            top_k=5,
+        )        # Improved system will be added in a later step
+
 
     if args.threshold > 0:
         print(f"Abstention threshold enabled: score < {args.threshold} -> abstain")
-
-    metrics = evaluate(retrieve_fn, questions, verbose=args.verbose,
+    print(f"build time for each index is: {build_time}")
+    metrics,retrive_time = evaluate(retrieve_fn, questions, verbose=args.verbose,
                        abstain_threshold=args.threshold)
     print_report(metrics, args.system)
 
@@ -395,8 +422,13 @@ def main():
     suffix = f"_t{args.threshold}" if args.threshold > 0 else ""
     out_path = os.path.join(PROJECT_ROOT,"data", "eval",
                             f"results_{args.system}{suffix}.json")
+    speed_metrics={"build_time" :build_time , "retrieve_time" : retrive_time}
+    build_time_out_path = os.path.join(PROJECT_ROOT,"data", "eval",
+                            f"results_{args.system}{suffix}_build_time.json")
     with open(out_path, "w", encoding="utf-8") as f:
         json.dump(metrics, f, indent=2, ensure_ascii=False)
+    with open(build_time_out_path, "w", encoding="utf-8") as f:
+        json.dump(speed_metrics, f, indent=2, ensure_ascii=False)
     print(f"\nDetailed results saved to {out_path}")
 
 if __name__ == "__main__":

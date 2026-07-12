@@ -23,3 +23,5 @@ simply adding title to each chunk boost the scores of TP samples now with treshh
 ![score distribution](results\sentences_chunking_title\score_distribution.png)
 
 ![confusion matrix](results\sentences_chunking_title\confusion_matrix.png)
+
+as results shows in below images the bm25 term-based search algo also works good on our data for answerable questions but using bm25 seprately can catch the unanswerable questions so next step is use bm25 as retirever and sematic retreiver as reranker as the recal@3 of bm25 is 100% we can ensure in top-5 result of it there is gold doc and it can boost the scores. also i added build_time and retrieval speed time mesuring.
