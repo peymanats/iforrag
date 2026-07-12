@@ -1,0 +1,1811 @@
+{
+  "n_answerable": 90,
+  "n_unanswerable": 10,
+  "abstain_threshold": 0.65,
+  "hit_rate_at_1": 0.6555555555555556,
+  "hit_rate_at_3": 0.7,
+  "mrr": 0.6777777777777778,
+  "abstention_rate": 0.6,
+  "fabrication_rate": 0.4,
+  "false_abstain_rate": 0.3,
+  "avg_score_answerable": 0.6957689997222688,
+  "avg_score_unanswerable": 0.596598356962204,
+  "min_score_answerable": 0.3034568428993225,
+  "max_score_unanswerable": 0.709904670715332,
+  "per_category": {
+    "fact_lookup": {
+      "total": 30,
+      "hit1": 25
+    },
+    "paraphrase": {
+      "total": 42,
+      "hit1": 24
+    },
+    "ambiguous": {
+      "total": 3,
+      "hit1": 2
+    },
+    "multi_doc": {
+      "total": 15,
+      "hit1": 8
+    }
+  },
+  "per_question": [
+    {
+      "id": "Q001",
+      "category": "fact_lookup",
+      "question": "What is the rated motor power of the C-100 compressor?",
+      "expected": [
+        "DOC-03"
+      ],
+      "retrieved": [
+        "DOC-03",
+        "DOC-01",
+        "DOC-04"
+      ],
+      "top_score": 0.8349595665931702,
+      "hit@1": true,
+      "first_correct_rank": 1,
+      "abstained": false,
+      "answerable": true
+    },
+    {
+      "id": "Q002",
+      "category": "fact_lookup",
+      "question": "What size inlet is required for the P-200 pump?",
+      "expected": [
+        "DOC-01"
+      ],
+      "retrieved": [
+        "DOC-01",
+        "DOC-02",
+        "DOC-03"
+      ],
+      "top_score": 0.7774561643600464,
+      "hit@1": true,
+      "first_correct_rank": 1,
+      "abstained": false,
+      "answerable": true
+    },
+    {
+      "id": "Q003",
+      "category": "fact_lookup",
+      "question": "According to the general specifications of the P-200, what is the maximum operating pressure?",
+      "expected": [
+        "DOC-01"
+      ],
+      "retrieved": [
+        "DOC-02",
+        "DOC-01",
+        "DOC-03"
+      ],
+      "top_score": 0.7853118181228638,
+      "hit@1": false,
+      "first_correct_rank": 2,
+      "abstained": false,
+      "answerable": true
+    },
+    {
+      "id": "Q004",
+      "category": "fact_lookup",
+      "question": "How often should temperature sensors be calibrated?",
+      "expected": [
+        "DOC-10"
+      ],
+      "retrieved": [
+        "DOC-10",
+        "DOC-16",
+        "DOC-12"
+      ],
+      "top_score": 0.7814123034477234,
+      "hit@1": true,
+      "first_correct_rank": 1,
+      "abstained": false,
+      "answerable": true
+    },
+    {
+      "id": "Q005",
+      "category": "fact_lookup",
+      "question": "What does the error code E-207 indicate on pump units?",
+      "expected": [
+        "DOC-07"
+      ],
+      "retrieved": [
+        "DOC-07",
+        "DOC-08",
+        "DOC-02"
+      ],
+      "top_score": 0.8269859552383423,
+      "hit@1": true,
+      "first_correct_rank": 1,
+      "abstained": false,
+      "answerable": true
+    },
+    {
+      "id": "Q006",
+      "category": "fact_lookup",
+      "question": "What is the acceptable vibration velocity limit for F-30 axial fan units?",
+      "expected": [
+        "DOC-05"
+      ],
+      "retrieved": [
+        "DOC-05",
+        "DOC-06",
+        "DOC-09"
+      ],
+      "top_score": 0.9350286722183228,
+      "hit@1": true,
+      "first_correct_rank": 1,
+      "abstained": false,
+      "answerable": true
+    },
+    {
+      "id": "Q007",
+      "category": "fact_lookup",
+      "question": "What does an E-115 error code mean?",
+      "expected": [
+        "DOC-08"
+      ],
+      "retrieved": [
+        "DOC-08",
+        "DOC-07",
+        "DOC-11"
+      ],
+      "top_score": 0.7292605042457581,
+      "hit@1": true,
+      "first_correct_rank": 1,
+      "abstained": false,
+      "answerable": true
+    },
+    {
+      "id": "Q008",
+      "category": "fact_lookup",
+      "question": "What is the recommended replacement interval for the BRG-4410 bearing?",
+      "expected": [
+        "DOC-09"
+      ],
+      "retrieved": [
+        "DOC-09",
+        "DOC-12",
+        "DOC-06"
+      ],
+      "top_score": 0.8398686647415161,
+      "hit@1": true,
+      "first_correct_rank": 1,
+      "abstained": false,
+      "answerable": true
+    },
+    {
+      "id": "Q009",
+      "category": "fact_lookup",
+      "question": "What is the rated flow rate of the P-200 pump?",
+      "expected": [
+        "DOC-01"
+      ],
+      "retrieved": [
+        "DOC-01",
+        "DOC-02",
+        "DOC-03"
+      ],
+      "top_score": 0.8424295783042908,
+      "hit@1": true,
+      "first_correct_rank": 1,
+      "abstained": false,
+      "answerable": true
+    },
+    {
+      "id": "Q010",
+      "category": "fact_lookup",
+      "question": "What temperature range is specified for operating the P-200 pump?",
+      "expected": [
+        "DOC-01"
+      ],
+      "retrieved": [
+        "DOC-01",
+        "DOC-02",
+        "DOC-03"
+      ],
+      "top_score": 0.9139582514762878,
+      "hit@1": true,
+      "first_correct_rank": 1,
+      "abstained": false,
+      "answerable": true
+    },
+    {
+      "id": "Q011",
+      "category": "fact_lookup",
+      "question": "Which error code represents a dry-run condition on a pump?",
+      "expected": [
+        "DOC-07"
+      ],
+      "retrieved": [
+        "DOC-07",
+        "DOC-08",
+        "DOC-02"
+      ],
+      "top_score": 0.7312676906585693,
+      "hit@1": true,
+      "first_correct_rank": 1,
+      "abstained": false,
+      "answerable": true
+    },
+    {
+      "id": "Q012",
+      "category": "fact_lookup",
+      "question": "What error code is triggered when there is a communication timeout?",
+      "expected": [
+        "DOC-08"
+      ],
+      "retrieved": [
+        "DOC-08",
+        "DOC-07",
+        "DOC-16"
+      ],
+      "top_score": 0.6548656225204468,
+      "hit@1": true,
+      "first_correct_rank": 1,
+      "abstained": false,
+      "answerable": true
+    },
+    {
+      "id": "Q013",
+      "category": "fact_lookup",
+      "question": "What ambient temperature must the C-100 compressor stay below?",
+      "expected": [
+        "DOC-03"
+      ],
+      "retrieved": [
+        "DOC-03",
+        "DOC-01",
+        "DOC-10"
+      ],
+      "top_score": 0.8722386956214905,
+      "hit@1": true,
+      "first_correct_rank": 1,
+      "abstained": false,
+      "answerable": true
+    },
+    {
+      "id": "Q014",
+      "category": "fact_lookup",
+      "question": "How often must condensate be drained from the C-100 compressor?",
+      "expected": [
+        "DOC-03"
+      ],
+      "retrieved": [
+        "DOC-03",
+        "DOC-12",
+        "DOC-02"
+      ],
+      "top_score": 0.8631137609481812,
+      "hit@1": true,
+      "first_correct_rank": 1,
+      "abstained": false,
+      "answerable": true
+    },
+    {
+      "id": "Q015",
+      "category": "fact_lookup",
+      "question": "What is the rated output of the C-100 rotary screw air compressor?",
+      "expected": [
+        "DOC-03"
+      ],
+      "retrieved": [
+        "DOC-03",
+        "DOC-01",
+        "DOC-02"
+      ],
+      "top_score": 0.7268011569976807,
+      "hit@1": true,
+      "first_correct_rank": 1,
+      "abstained": false,
+      "answerable": true
+    },
+    {
+      "id": "Q016",
+      "category": "fact_lookup",
+      "question": "What should be checked in the first minute of running the M-50 motor?",
+      "expected": [
+        "DOC-04"
+      ],
+      "retrieved": [
+        "DOC-04",
+        "DOC-13",
+        "DOC-02"
+      ],
+      "top_score": 0.7019606232643127,
+      "hit@1": true,
+      "first_correct_rank": 1,
+      "abstained": false,
+      "answerable": true
+    },
+    {
+      "id": "Q017",
+      "category": "fact_lookup",
+      "question": "What is the first step before starting the M-50 electric motor?",
+      "expected": [
+        "DOC-04"
+      ],
+      "retrieved": [
+        "DOC-04",
+        "DOC-13",
+        "DOC-02"
+      ],
+      "top_score": 0.7483228445053101,
+      "hit@1": true,
+      "first_correct_rank": 1,
+      "abstained": false,
+      "answerable": true
+    },
+    {
+      "id": "Q018",
+      "category": "fact_lookup",
+      "question": "According to the F-30 vibration limit specifications, how many axes must be measured during checks?",
+      "expected": [
+        "DOC-05"
+      ],
+      "retrieved": [
+        "DOC-06",
+        "DOC-05",
+        "DOC-12"
+      ],
+      "top_score": 0.768198549747467,
+      "hit@1": false,
+      "first_correct_rank": 2,
+      "abstained": false,
+      "answerable": true
+    },
+    {
+      "id": "Q019",
+      "category": "fact_lookup",
+      "question": "Who is allowed to remove a lockout tag and lock?",
+      "expected": [
+        "DOC-11"
+      ],
+      "retrieved": [
+        "DOC-11",
+        "DOC-13",
+        "DOC-14"
+      ],
+      "top_score": 0.8386653661727905,
+      "hit@1": true,
+      "first_correct_rank": 1,
+      "abstained": false,
+      "answerable": true
+    },
+    {
+      "id": "Q020",
+      "category": "fact_lookup",
+      "question": "How often should belt and coupling inspections occur?",
+      "expected": [
+        "DOC-12"
+      ],
+      "retrieved": [
+        "DOC-12",
+        "DOC-13",
+        "DOC-02"
+      ],
+      "top_score": 0.5492797493934631,
+      "hit@1": false,
+      "first_correct_rank": 1,
+      "abstained": true,
+      "answerable": true
+    },
+    {
+      "id": "Q021",
+      "category": "fact_lookup",
+      "question": "What should be done to prevent duplicate readings in sensor data logging?",
+      "expected": [
+        "DOC-16"
+      ],
+      "retrieved": [
+        "DOC-16",
+        "DOC-10",
+        "DOC-02"
+      ],
+      "top_score": 0.8212820887565613,
+      "hit@1": true,
+      "first_correct_rank": 1,
+      "abstained": false,
+      "answerable": true
+    },
+    {
+      "id": "Q022",
+      "category": "fact_lookup",
+      "question": "What is the standard maintenance interval for compressors?",
+      "expected": [
+        "DOC-12"
+      ],
+      "retrieved": [
+        "DOC-12",
+        "DOC-03",
+        "DOC-02"
+      ],
+      "top_score": 0.6819278597831726,
+      "hit@1": true,
+      "first_correct_rank": 1,
+      "abstained": false,
+      "answerable": true
+    },
+    {
+      "id": "Q023",
+      "category": "fact_lookup",
+      "question": "What document must be handed over to the maintenance owner after commissioning?",
+      "expected": [
+        "DOC-13"
+      ],
+      "retrieved": [
+        "DOC-13",
+        "DOC-12",
+        "DOC-11"
+      ],
+      "top_score": 0.7035846710205078,
+      "hit@1": true,
+      "first_correct_rank": 1,
+      "abstained": false,
+      "answerable": true
+    },
+    {
+      "id": "Q024",
+      "category": "fact_lookup",
+      "question": "Who should be notified immediately after an emergency shutdown is initiated?",
+      "expected": [
+        "DOC-14"
+      ],
+      "retrieved": [
+        "DOC-14",
+        "DOC-11",
+        "DOC-16"
+      ],
+      "top_score": 0.6191614866256714,
+      "hit@1": false,
+      "first_correct_rank": 1,
+      "abstained": true,
+      "answerable": true
+    },
+    {
+      "id": "Q025",
+      "category": "fact_lookup",
+      "question": "How should critical spare parts be managed regarding stock levels?",
+      "expected": [
+        "DOC-15"
+      ],
+      "retrieved": [
+        "DOC-15",
+        "DOC-13",
+        "DOC-02"
+      ],
+      "top_score": 0.7747690677642822,
+      "hit@1": true,
+      "first_correct_rank": 1,
+      "abstained": false,
+      "answerable": true
+    },
+    {
+      "id": "Q026",
+      "category": "fact_lookup",
+      "question": "What is the inlet size of the P-200 pump?",
+      "expected": [
+        "DOC-01"
+      ],
+      "retrieved": [
+        "DOC-01",
+        "DOC-02",
+        "DOC-03"
+      ],
+      "top_score": 0.8142668008804321,
+      "hit@1": true,
+      "first_correct_rank": 1,
+      "abstained": false,
+      "answerable": true
+    },
+    {
+      "id": "Q027",
+      "category": "fact_lookup",
+      "question": "What indicates an open circuit on a temperature probe?",
+      "expected": [
+        "DOC-08"
+      ],
+      "retrieved": [
+        "DOC-10",
+        "DOC-08",
+        "DOC-06"
+      ],
+      "top_score": 0.5364452600479126,
+      "hit@1": false,
+      "first_correct_rank": 2,
+      "abstained": true,
+      "answerable": true
+    },
+    {
+      "id": "Q028",
+      "category": "fact_lookup",
+      "question": "What tool should be used when removing a BRG-4410 bearing?",
+      "expected": [
+        "DOC-09"
+      ],
+      "retrieved": [
+        "DOC-09",
+        "DOC-04",
+        "DOC-13"
+      ],
+      "top_score": 0.7532925009727478,
+      "hit@1": true,
+      "first_correct_rank": 1,
+      "abstained": false,
+      "answerable": true
+    },
+    {
+      "id": "Q029",
+      "category": "fact_lookup",
+      "question": "At how many calibration points should temperature sensors be checked?",
+      "expected": [
+        "DOC-10"
+      ],
+      "retrieved": [
+        "DOC-10",
+        "DOC-06",
+        "DOC-05"
+      ],
+      "top_score": 0.6613883376121521,
+      "hit@1": true,
+      "first_correct_rank": 1,
+      "abstained": false,
+      "answerable": true
+    },
+    {
+      "id": "Q030",
+      "category": "fact_lookup",
+      "question": "What must be tested during the lockout/tagout procedure to confirm the machine is inactive?",
+      "expected": [
+        "DOC-11"
+      ],
+      "retrieved": [
+        "DOC-11",
+        "DOC-13",
+        "DOC-14"
+      ],
+      "top_score": 0.7506033182144165,
+      "hit@1": true,
+      "first_correct_rank": 1,
+      "abstained": false,
+      "answerable": true
+    },
+    {
+      "id": "Q031",
+      "category": "paraphrase",
+      "question": "Are there specific suction requirements when installing the P-200?",
+      "expected": [
+        "DOC-01"
+      ],
+      "retrieved": [
+        "DOC-01",
+        "DOC-02",
+        "DOC-13"
+      ],
+      "top_score": 0.6315919756889343,
+      "hit@1": false,
+      "first_correct_rank": 1,
+      "abstained": true,
+      "answerable": true
+    },
+    {
+      "id": "Q032",
+      "category": "paraphrase",
+      "question": "What routine inspection tasks must be done during the P-200's periodic maintenance?",
+      "expected": [
+        "DOC-02"
+      ],
+      "retrieved": [
+        "DOC-02",
+        "DOC-12",
+        "DOC-13"
+      ],
+      "top_score": 0.630369246006012,
+      "hit@1": false,
+      "first_correct_rank": 1,
+      "abstained": true,
+      "answerable": true
+    },
+    {
+      "id": "Q033",
+      "category": "paraphrase",
+      "question": "What steps should be taken if the E-207 overpressure warning occurs?",
+      "expected": [
+        "DOC-07"
+      ],
+      "retrieved": [
+        "DOC-07",
+        "DOC-02",
+        "DOC-14"
+      ],
+      "top_score": 0.6707217693328857,
+      "hit@1": true,
+      "first_correct_rank": 1,
+      "abstained": false,
+      "answerable": true
+    },
+    {
+      "id": "Q034",
+      "category": "paraphrase",
+      "question": "What are the troubleshooting steps for a connection timeout error on a field device?",
+      "expected": [
+        "DOC-08"
+      ],
+      "retrieved": [
+        "DOC-08",
+        "DOC-11",
+        "DOC-16"
+      ],
+      "top_score": 0.54877769947052,
+      "hit@1": false,
+      "first_correct_rank": 1,
+      "abstained": true,
+      "answerable": true
+    },
+    {
+      "id": "Q035",
+      "category": "paraphrase",
+      "question": "How should an engineer verify the rotation direction of the M-50?",
+      "expected": [
+        "DOC-04"
+      ],
+      "retrieved": [
+        "DOC-04",
+        "DOC-06",
+        "DOC-13"
+      ],
+      "top_score": 0.6827666759490967,
+      "hit@1": true,
+      "first_correct_rank": 1,
+      "abstained": false,
+      "answerable": true
+    },
+    {
+      "id": "Q036",
+      "category": "paraphrase",
+      "question": "What potential mechanical issues are signaled by elevated vibration on F-30 fan units?",
+      "expected": [
+        "DOC-05"
+      ],
+      "retrieved": [
+        "DOC-05",
+        "DOC-06",
+        "DOC-02"
+      ],
+      "top_score": 0.7652788162231445,
+      "hit@1": true,
+      "first_correct_rank": 1,
+      "abstained": false,
+      "answerable": true
+    },
+    {
+      "id": "Q037",
+      "category": "paraphrase",
+      "question": "What is the lifespan limit in run hours for the BRG-4410 before replacement is mandatory?",
+      "expected": [
+        "DOC-09"
+      ],
+      "retrieved": [
+        "DOC-09",
+        "DOC-02",
+        "DOC-12"
+      ],
+      "top_score": 0.6083701848983765,
+      "hit@1": false,
+      "first_correct_rank": 1,
+      "abstained": true,
+      "answerable": true
+    },
+    {
+      "id": "Q038",
+      "category": "paraphrase",
+      "question": "What parameters need adjustments when calibrating temperature sensors?",
+      "expected": [
+        "DOC-10"
+      ],
+      "retrieved": [
+        "DOC-10",
+        "DOC-03",
+        "DOC-01"
+      ],
+      "top_score": 0.7514638304710388,
+      "hit@1": true,
+      "first_correct_rank": 1,
+      "abstained": false,
+      "answerable": true
+    },
+    {
+      "id": "Q039",
+      "category": "paraphrase",
+      "question": "What precaution must be taken before conducting any repair work after an emergency stop?",
+      "expected": [
+        "DOC-14"
+      ],
+      "retrieved": [
+        "DOC-14",
+        "DOC-12",
+        "DOC-11"
+      ],
+      "top_score": 0.5271791219711304,
+      "hit@1": false,
+      "first_correct_rank": 1,
+      "abstained": true,
+      "answerable": true
+    },
+    {
+      "id": "Q040",
+      "category": "paraphrase",
+      "question": "How should a technician order a replacement component for equipment?",
+      "expected": [
+        "DOC-15"
+      ],
+      "retrieved": [
+        "DOC-15",
+        "DOC-13",
+        "DOC-12"
+      ],
+      "top_score": 0.5036407709121704,
+      "hit@1": false,
+      "first_correct_rank": 1,
+      "abstained": true,
+      "answerable": true
+    },
+    {
+      "id": "Q041",
+      "category": "paraphrase",
+      "question": "What information must be recorded with every preventive maintenance task?",
+      "expected": [
+        "DOC-12"
+      ],
+      "retrieved": [
+        "DOC-12",
+        "DOC-13",
+        "DOC-02"
+      ],
+      "top_score": 0.6669331192970276,
+      "hit@1": true,
+      "first_correct_rank": 1,
+      "abstained": false,
+      "answerable": true
+    },
+    {
+      "id": "Q042",
+      "category": "paraphrase",
+      "question": "What is the procedure for handling a network interruption when logging sensor data?",
+      "expected": [
+        "DOC-16"
+      ],
+      "retrieved": [
+        "DOC-16",
+        "DOC-14",
+        "DOC-11"
+      ],
+      "top_score": 0.8026546239852905,
+      "hit@1": true,
+      "first_correct_rank": 1,
+      "abstained": false,
+      "answerable": true
+    },
+    {
+      "id": "Q043",
+      "category": "paraphrase",
+      "question": "How is the C-100 compressor protected from moisture buildup?",
+      "expected": [
+        "DOC-03"
+      ],
+      "retrieved": [
+        "DOC-03",
+        "DOC-12",
+        "DOC-01"
+      ],
+      "top_score": 0.5392511487007141,
+      "hit@1": false,
+      "first_correct_rank": 1,
+      "abstained": true,
+      "answerable": true
+    },
+    {
+      "id": "Q044",
+      "category": "paraphrase",
+      "question": "Under what electrical condition should the M-50 motor be initially started?",
+      "expected": [
+        "DOC-04"
+      ],
+      "retrieved": [
+        "DOC-04",
+        "DOC-03",
+        "DOC-02"
+      ],
+      "top_score": 0.8000388145446777,
+      "hit@1": true,
+      "first_correct_rank": 1,
+      "abstained": false,
+      "answerable": true
+    },
+    {
+      "id": "Q045",
+      "category": "paraphrase",
+      "question": "What are the consequences of high vibration levels on F-30 bearing housings?",
+      "expected": [
+        "DOC-05"
+      ],
+      "retrieved": [
+        "DOC-05",
+        "DOC-06",
+        "DOC-09"
+      ],
+      "top_score": 0.6963381171226501,
+      "hit@1": true,
+      "first_correct_rank": 1,
+      "abstained": false,
+      "answerable": true
+    },
+    {
+      "id": "Q046",
+      "category": "paraphrase",
+      "question": "What values must be documented during temperature sensor calibration?",
+      "expected": [
+        "DOC-10"
+      ],
+      "retrieved": [
+        "DOC-10",
+        "DOC-16",
+        "DOC-03"
+      ],
+      "top_score": 0.7291186451911926,
+      "hit@1": true,
+      "first_correct_rank": 1,
+      "abstained": false,
+      "answerable": true
+    },
+    {
+      "id": "Q047",
+      "category": "paraphrase",
+      "question": "What steps are required to ensure zero energy state before working on machinery?",
+      "expected": [
+        "DOC-11"
+      ],
+      "retrieved": [
+        "DOC-11",
+        "DOC-04",
+        "DOC-13"
+      ],
+      "top_score": 0.544831395149231,
+      "hit@1": false,
+      "first_correct_rank": 1,
+      "abstained": true,
+      "answerable": true
+    },
+    {
+      "id": "Q048",
+      "category": "paraphrase",
+      "question": "What activities should be carried out during the initial run of a new unit?",
+      "expected": [
+        "DOC-13"
+      ],
+      "retrieved": [
+        "DOC-13",
+        "DOC-04",
+        "DOC-11"
+      ],
+      "top_score": 0.3034568428993225,
+      "hit@1": false,
+      "first_correct_rank": 1,
+      "abstained": true,
+      "answerable": true
+    },
+    {
+      "id": "Q049",
+      "category": "paraphrase",
+      "question": "What details should be documented when keeping track of supplier history for parts?",
+      "expected": [
+        "DOC-15"
+      ],
+      "retrieved": [
+        "DOC-15",
+        "DOC-13",
+        "DOC-12"
+      ],
+      "top_score": 0.5954957008361816,
+      "hit@1": false,
+      "first_correct_rank": 1,
+      "abstained": true,
+      "answerable": true
+    },
+    {
+      "id": "Q050",
+      "category": "paraphrase",
+      "question": "What fluid types are suitable for the P-200 process pump?",
+      "expected": [
+        "DOC-01"
+      ],
+      "retrieved": [
+        "DOC-01",
+        "DOC-02",
+        "DOC-07"
+      ],
+      "top_score": 0.7204352021217346,
+      "hit@1": true,
+      "first_correct_rank": 1,
+      "abstained": false,
+      "answerable": true
+    },
+    {
+      "id": "Q051",
+      "category": "paraphrase",
+      "question": "How many operating hours can a pump run before its preventive service is due?",
+      "expected": [
+        "DOC-12"
+      ],
+      "retrieved": [
+        "DOC-12",
+        "DOC-02",
+        "DOC-01"
+      ],
+      "top_score": 0.7124444246292114,
+      "hit@1": true,
+      "first_correct_rank": 1,
+      "abstained": false,
+      "answerable": true
+    },
+    {
+      "id": "Q052",
+      "category": "paraphrase",
+      "question": "What are the components integrated into the C-100 compressor package?",
+      "expected": [
+        "DOC-03"
+      ],
+      "retrieved": [
+        "DOC-03",
+        "DOC-01",
+        "DOC-15"
+      ],
+      "top_score": 0.7369745373725891,
+      "hit@1": true,
+      "first_correct_rank": 1,
+      "abstained": false,
+      "answerable": true
+    },
+    {
+      "id": "Q053",
+      "category": "paraphrase",
+      "question": "What safety equipment must be installed on the M-50 motor before starting?",
+      "expected": [
+        "DOC-04"
+      ],
+      "retrieved": [
+        "DOC-04",
+        "DOC-13",
+        "DOC-11"
+      ],
+      "top_score": 0.6638694405555725,
+      "hit@1": true,
+      "first_correct_rank": 1,
+      "abstained": false,
+      "answerable": true
+    },
+    {
+      "id": "Q054",
+      "category": "paraphrase",
+      "question": "What should be done if the mechanical seal on the P-200 starts leaking?",
+      "expected": [
+        "DOC-02"
+      ],
+      "retrieved": [
+        "DOC-02",
+        "DOC-01",
+        "DOC-11"
+      ],
+      "top_score": 0.7482330799102783,
+      "hit@1": true,
+      "first_correct_rank": 1,
+      "abstained": false,
+      "answerable": true
+    },
+    {
+      "id": "Q055",
+      "category": "paraphrase",
+      "question": "What does a high vibration reading indicate on an F-30 fan?",
+      "expected": [
+        "DOC-05"
+      ],
+      "retrieved": [
+        "DOC-05",
+        "DOC-06",
+        "DOC-02"
+      ],
+      "top_score": 0.835149884223938,
+      "hit@1": true,
+      "first_correct_rank": 1,
+      "abstained": false,
+      "answerable": true
+    },
+    {
+      "id": "Q056",
+      "category": "paraphrase",
+      "question": "What reference tool is used to calibrate temperature sensors?",
+      "expected": [
+        "DOC-10"
+      ],
+      "retrieved": [
+        "DOC-10",
+        "DOC-16",
+        "DOC-06"
+      ],
+      "top_score": 0.7375379800796509,
+      "hit@1": true,
+      "first_correct_rank": 1,
+      "abstained": false,
+      "answerable": true
+    },
+    {
+      "id": "Q057",
+      "category": "paraphrase",
+      "question": "How is the zero energy state verified during a lockout?",
+      "expected": [
+        "DOC-11"
+      ],
+      "retrieved": [
+        "DOC-11",
+        "DOC-13",
+        "DOC-08"
+      ],
+      "top_score": 0.5662567019462585,
+      "hit@1": false,
+      "first_correct_rank": 1,
+      "abstained": true,
+      "answerable": true
+    },
+    {
+      "id": "Q058",
+      "category": "paraphrase",
+      "question": "What must be checked regarding the insulation of the M-50 electric motor before start?",
+      "expected": [
+        "DOC-04"
+      ],
+      "retrieved": [
+        "DOC-04",
+        "DOC-02",
+        "DOC-03"
+      ],
+      "top_score": 0.7845215797424316,
+      "hit@1": true,
+      "first_correct_rank": 1,
+      "abstained": false,
+      "answerable": true
+    },
+    {
+      "id": "Q059",
+      "category": "paraphrase",
+      "question": "What records should be verified to confirm that interlocks work during startup testing?",
+      "expected": [
+        "DOC-13"
+      ],
+      "retrieved": [
+        "DOC-13",
+        "DOC-11",
+        "DOC-04"
+      ],
+      "top_score": 0.6326917409896851,
+      "hit@1": false,
+      "first_correct_rank": 1,
+      "abstained": true,
+      "answerable": true
+    },
+    {
+      "id": "Q060",
+      "category": "paraphrase",
+      "question": "What action must be taken immediately in case of an urgent safety hazard?",
+      "expected": [
+        "DOC-14"
+      ],
+      "retrieved": [
+        "DOC-14",
+        "DOC-11",
+        "DOC-13"
+      ],
+      "top_score": 0.4513118863105774,
+      "hit@1": false,
+      "first_correct_rank": 1,
+      "abstained": true,
+      "answerable": true
+    },
+    {
+      "id": "Q061",
+      "category": "paraphrase",
+      "question": "How is the data integrity of sensor logs maintained when there are retries?",
+      "expected": [
+        "DOC-16"
+      ],
+      "retrieved": [
+        "DOC-16",
+        "DOC-10",
+        "DOC-12"
+      ],
+      "top_score": 0.6956461668014526,
+      "hit@1": true,
+      "first_correct_rank": 1,
+      "abstained": false,
+      "answerable": true
+    },
+    {
+      "id": "Q062",
+      "category": "paraphrase",
+      "question": "How often should bearings be lubricated according to the general maintenance intervals?",
+      "expected": [
+        "DOC-12"
+      ],
+      "retrieved": [
+        "DOC-12",
+        "DOC-09",
+        "DOC-02"
+      ],
+      "top_score": 0.6889790892601013,
+      "hit@1": true,
+      "first_correct_rank": 1,
+      "abstained": false,
+      "answerable": true
+    },
+    {
+      "id": "Q063",
+      "category": "paraphrase",
+      "question": "What should you check if a temperature sensor reports an open circuit?",
+      "expected": [
+        "DOC-08"
+      ],
+      "retrieved": [
+        "DOC-10",
+        "DOC-08",
+        "DOC-16"
+      ],
+      "top_score": 0.5376060009002686,
+      "hit@1": false,
+      "first_correct_rank": 2,
+      "abstained": true,
+      "answerable": true
+    },
+    {
+      "id": "Q064",
+      "category": "paraphrase",
+      "question": "Is it acceptable to reinstall a BRG-4410 bearing after it has been pulled?",
+      "expected": [
+        "DOC-09"
+      ],
+      "retrieved": [
+        "DOC-09",
+        "DOC-04",
+        "DOC-15"
+      ],
+      "top_score": 0.7487145662307739,
+      "hit@1": true,
+      "first_correct_rank": 1,
+      "abstained": false,
+      "answerable": true
+    },
+    {
+      "id": "Q065",
+      "category": "paraphrase",
+      "question": "How does the technician handle the isolation of energy during maintenance?",
+      "expected": [
+        "DOC-11"
+      ],
+      "retrieved": [
+        "DOC-11",
+        "DOC-12",
+        "DOC-02"
+      ],
+      "top_score": 0.5907638072967529,
+      "hit@1": false,
+      "first_correct_rank": 1,
+      "abstained": true,
+      "answerable": true
+    },
+    {
+      "id": "Q066",
+      "category": "paraphrase",
+      "question": "What is the recommended frequency for calibrating standard instruments?",
+      "expected": [
+        "DOC-12"
+      ],
+      "retrieved": [
+        "DOC-06",
+        "DOC-10",
+        "DOC-05"
+      ],
+      "top_score": 0.4479735493659973,
+      "hit@1": false,
+      "first_correct_rank": 4,
+      "abstained": true,
+      "answerable": true
+    },
+    {
+      "id": "Q067",
+      "category": "paraphrase",
+      "question": "What specific details must be logged during each regular intervention on equipment?",
+      "expected": [
+        "DOC-12"
+      ],
+      "retrieved": [
+        "DOC-12",
+        "DOC-02",
+        "DOC-13"
+      ],
+      "top_score": 0.4523041546344757,
+      "hit@1": false,
+      "first_correct_rank": 1,
+      "abstained": true,
+      "answerable": true
+    },
+    {
+      "id": "Q068",
+      "category": "paraphrase",
+      "question": "How does a technician find the part number when ordering spares?",
+      "expected": [
+        "DOC-15"
+      ],
+      "retrieved": [
+        "DOC-15",
+        "DOC-12",
+        "DOC-08"
+      ],
+      "top_score": 0.7382789850234985,
+      "hit@1": true,
+      "first_correct_rank": 1,
+      "abstained": false,
+      "answerable": true
+    },
+    {
+      "id": "Q069",
+      "category": "paraphrase",
+      "question": "What needs to be monitored during the initial sixty seconds of motor startup?",
+      "expected": [
+        "DOC-04"
+      ],
+      "retrieved": [
+        "DOC-04",
+        "DOC-13",
+        "DOC-11"
+      ],
+      "top_score": 0.6669530868530273,
+      "hit@1": true,
+      "first_correct_rank": 1,
+      "abstained": false,
+      "answerable": true
+    },
+    {
+      "id": "Q070",
+      "category": "paraphrase",
+      "question": "What is the outlet dimension of the P-200 process pump?",
+      "expected": [
+        "DOC-01"
+      ],
+      "retrieved": [
+        "DOC-01",
+        "DOC-02",
+        "DOC-03"
+      ],
+      "top_score": 0.7611509561538696,
+      "hit@1": true,
+      "first_correct_rank": 1,
+      "abstained": false,
+      "answerable": true
+    },
+    {
+      "id": "Q071",
+      "category": "ambiguous",
+      "question": "What is the maximum operating pressure for the P-200 pump according to its maintenance guidelines?",
+      "expected": [
+        "DOC-02"
+      ],
+      "retrieved": [
+        "DOC-02",
+        "DOC-01",
+        "DOC-12"
+      ],
+      "top_score": 0.8520295023918152,
+      "hit@1": true,
+      "first_correct_rank": 1,
+      "abstained": false,
+      "answerable": true
+    },
+    {
+      "id": "Q072",
+      "category": "paraphrase",
+      "question": "Where should the vibration level of the F-30 fan be maintained at or below 4.5 mm/s RMS according to the vibration note?",
+      "expected": [
+        "DOC-06"
+      ],
+      "retrieved": [
+        "DOC-05",
+        "DOC-06",
+        "DOC-09"
+      ],
+      "top_score": 0.7391800880432129,
+      "hit@1": false,
+      "first_correct_rank": 2,
+      "abstained": false,
+      "answerable": true
+    },
+    {
+      "id": "Q073",
+      "category": "multi_doc",
+      "question": "Which documents specify the maintenance frequency or intervals for the P-200 pump?",
+      "expected": [
+        "DOC-02",
+        "DOC-12"
+      ],
+      "retrieved": [
+        "DOC-02",
+        "DOC-12",
+        "DOC-01"
+      ],
+      "top_score": 0.7463311553001404,
+      "hit@1": true,
+      "first_correct_rank": 1,
+      "abstained": false,
+      "answerable": true
+    },
+    {
+      "id": "Q074",
+      "category": "multi_doc",
+      "question": "What actions and investigations should be done when an F-30 fan bearing shows excessive vibration?",
+      "expected": [
+        "DOC-05",
+        "DOC-09"
+      ],
+      "retrieved": [
+        "DOC-05",
+        "DOC-06",
+        "DOC-09"
+      ],
+      "top_score": 0.7952336072921753,
+      "hit@1": true,
+      "first_correct_rank": 1,
+      "abstained": false,
+      "answerable": true
+    },
+    {
+      "id": "Q075",
+      "category": "multi_doc",
+      "question": "Which documents discuss the startup, rotation verification, and initial running checks of electrical motors?",
+      "expected": [
+        "DOC-04",
+        "DOC-13"
+      ],
+      "retrieved": [
+        "DOC-04",
+        "DOC-13",
+        "DOC-11"
+      ],
+      "top_score": 0.571599543094635,
+      "hit@1": false,
+      "first_correct_rank": 1,
+      "abstained": true,
+      "answerable": true
+    },
+    {
+      "id": "Q076",
+      "category": "multi_doc",
+      "question": "What issues can cause a high vibration warning on an F-30 fan, and what is the lifetime limit of its bearing?",
+      "expected": [
+        "DOC-05",
+        "DOC-09"
+      ],
+      "retrieved": [
+        "DOC-05",
+        "DOC-06",
+        "DOC-09"
+      ],
+      "top_score": 0.7666682600975037,
+      "hit@1": true,
+      "first_correct_rank": 1,
+      "abstained": false,
+      "answerable": true
+    },
+    {
+      "id": "Q077",
+      "category": "paraphrase",
+      "question": "According to the F-30 Vibration Note, what three-axis measurement routine is specified?",
+      "expected": [
+        "DOC-06"
+      ],
+      "retrieved": [
+        "DOC-06",
+        "DOC-05",
+        "DOC-02"
+      ],
+      "top_score": 0.853041410446167,
+      "hit@1": true,
+      "first_correct_rank": 1,
+      "abstained": false,
+      "answerable": true
+    },
+    {
+      "id": "Q078",
+      "category": "multi_doc",
+      "question": "What are the step-by-step procedures to handle a pump shutdown due to high pressure and log the event?",
+      "expected": [
+        "DOC-07",
+        "DOC-14"
+      ],
+      "retrieved": [
+        "DOC-14",
+        "DOC-02",
+        "DOC-01"
+      ],
+      "top_score": 0.530735969543457,
+      "hit@1": false,
+      "first_correct_rank": 1,
+      "abstained": true,
+      "answerable": true
+    },
+    {
+      "id": "Q079",
+      "category": "multi_doc",
+      "question": "Which files contain details on temperature sensor faults and their calibration procedures?",
+      "expected": [
+        "DOC-08",
+        "DOC-10"
+      ],
+      "retrieved": [
+        "DOC-10",
+        "DOC-08",
+        "DOC-16"
+      ],
+      "top_score": 0.5829182863235474,
+      "hit@1": false,
+      "first_correct_rank": 1,
+      "abstained": true,
+      "answerable": true
+    },
+    {
+      "id": "Q080",
+      "category": "multi_doc",
+      "question": "What is the maintenance routine for the P-200 mechanical seal and when should it be replaced?",
+      "expected": [
+        "DOC-01",
+        "DOC-02"
+      ],
+      "retrieved": [
+        "DOC-02",
+        "DOC-01",
+        "DOC-12"
+      ],
+      "top_score": 0.7563098669052124,
+      "hit@1": true,
+      "first_correct_rank": 1,
+      "abstained": false,
+      "answerable": true
+    },
+    {
+      "id": "Q081",
+      "category": "multi_doc",
+      "question": "How do you handle a scenario where a pump controller triggers E-207, and how is this logged in the data system?",
+      "expected": [
+        "DOC-07",
+        "DOC-16"
+      ],
+      "retrieved": [
+        "DOC-07",
+        "DOC-02",
+        "DOC-16"
+      ],
+      "top_score": 0.5563933849334717,
+      "hit@1": false,
+      "first_correct_rank": 1,
+      "abstained": true,
+      "answerable": true
+    },
+    {
+      "id": "Q082",
+      "category": "ambiguous",
+      "question": "What is the maximum operating pressure listed on the P-200 general specifications datasheet?",
+      "expected": [
+        "DOC-01"
+      ],
+      "retrieved": [
+        "DOC-02",
+        "DOC-01",
+        "DOC-03"
+      ],
+      "top_score": 0.7610552310943604,
+      "hit@1": false,
+      "first_correct_rank": 2,
+      "abstained": false,
+      "answerable": true
+    },
+    {
+      "id": "Q083",
+      "category": "multi_doc",
+      "question": "What is the service interval for the C-100 compressor, and where is its output specification documented?",
+      "expected": [
+        "DOC-03",
+        "DOC-12"
+      ],
+      "retrieved": [
+        "DOC-03",
+        "DOC-12",
+        "DOC-02"
+      ],
+      "top_score": 0.7310831546783447,
+      "hit@1": true,
+      "first_correct_rank": 1,
+      "abstained": false,
+      "answerable": true
+    },
+    {
+      "id": "Q084",
+      "category": "multi_doc",
+      "question": "What procedures must be followed before commencing maintenance on an electric motor to ensure it won't start?",
+      "expected": [
+        "DOC-04",
+        "DOC-11"
+      ],
+      "retrieved": [
+        "DOC-04",
+        "DOC-11",
+        "DOC-13"
+      ],
+      "top_score": 0.5640753507614136,
+      "hit@1": false,
+      "first_correct_rank": 1,
+      "abstained": true,
+      "answerable": true
+    },
+    {
+      "id": "Q085",
+      "category": "multi_doc",
+      "question": "What is the recommended replacement timeframe for a BRG-4410 bearing and how does it relate to the general PM schedule for bearings?",
+      "expected": [
+        "DOC-09",
+        "DOC-12"
+      ],
+      "retrieved": [
+        "DOC-09",
+        "DOC-12",
+        "DOC-02"
+      ],
+      "top_score": 0.77585768699646,
+      "hit@1": true,
+      "first_correct_rank": 1,
+      "abstained": false,
+      "answerable": true
+    },
+    {
+      "id": "Q086",
+      "category": "multi_doc",
+      "question": "If a temperature sensor is suspected of having a loose connection or open circuit, how do we diagnose and calibrate it?",
+      "expected": [
+        "DOC-08",
+        "DOC-10"
+      ],
+      "retrieved": [
+        "DOC-10",
+        "DOC-08",
+        "DOC-16"
+      ],
+      "top_score": 0.5594304800033569,
+      "hit@1": false,
+      "first_correct_rank": 1,
+      "abstained": true,
+      "answerable": true
+    },
+    {
+      "id": "Q087",
+      "category": "ambiguous",
+      "question": "Under what document title is the F-30 fan vibration limit of 4.5 mm/s RMS specifically designated as 'Vibration Limits'?",
+      "expected": [
+        "DOC-05"
+      ],
+      "retrieved": [
+        "DOC-05",
+        "DOC-06",
+        "DOC-09"
+      ],
+      "top_score": 0.829196035861969,
+      "hit@1": true,
+      "first_correct_rank": 1,
+      "abstained": false,
+      "answerable": true
+    },
+    {
+      "id": "Q088",
+      "category": "multi_doc",
+      "question": "What records must be kept for spare parts traceability and general maintenance interventions?",
+      "expected": [
+        "DOC-15",
+        "DOC-12"
+      ],
+      "retrieved": [
+        "DOC-15",
+        "DOC-12",
+        "DOC-13"
+      ],
+      "top_score": 0.6914375424385071,
+      "hit@1": true,
+      "first_correct_rank": 1,
+      "abstained": false,
+      "answerable": true
+    },
+    {
+      "id": "Q089",
+      "category": "multi_doc",
+      "question": "What are the alignment and vibration criteria to check when commissioning a newly installed F-30 fan?",
+      "expected": [
+        "DOC-13",
+        "DOC-05"
+      ],
+      "retrieved": [
+        "DOC-05",
+        "DOC-06",
+        "DOC-13"
+      ],
+      "top_score": 0.6708976030349731,
+      "hit@1": true,
+      "first_correct_rank": 1,
+      "abstained": false,
+      "answerable": true
+    },
+    {
+      "id": "Q090",
+      "category": "multi_doc",
+      "question": "What are the rules for safety tags and isolating main supplies during emergency shutdown versus scheduled maintenance?",
+      "expected": [
+        "DOC-11",
+        "DOC-14"
+      ],
+      "retrieved": [
+        "DOC-14",
+        "DOC-11",
+        "DOC-12"
+      ],
+      "top_score": 0.5315535664558411,
+      "hit@1": false,
+      "first_correct_rank": 1,
+      "abstained": true,
+      "answerable": true
+    },
+    {
+      "id": "Q091",
+      "category": "unanswerable",
+      "question": "What is the maximum flow rate of the C-100 rotary screw compressor?",
+      "expected": [],
+      "retrieved": [
+        "DOC-03",
+        "DOC-01",
+        "DOC-12"
+      ],
+      "top_score": 0.6477209329605103,
+      "abstained": true,
+      "answerable": false
+    },
+    {
+      "id": "Q092",
+      "category": "unanswerable",
+      "question": "What specific brand of grease or lubricant should be used for the BRG-4410 bearing?",
+      "expected": [],
+      "retrieved": [
+        "DOC-09",
+        "DOC-12",
+        "DOC-04"
+      ],
+      "top_score": 0.6302053332328796,
+      "abstained": true,
+      "answerable": false
+    },
+    {
+      "id": "Q093",
+      "category": "unanswerable",
+      "question": "What is the maximum current draw in amperes allowed on the M-50 motor nameplate?",
+      "expected": [],
+      "retrieved": [
+        "DOC-04",
+        "DOC-03",
+        "DOC-01"
+      ],
+      "top_score": 0.6727958917617798,
+      "abstained": false,
+      "answerable": false
+    },
+    {
+      "id": "Q094",
+      "category": "unanswerable",
+      "question": "How many stages does the C-100 compressor have?",
+      "expected": [],
+      "retrieved": [
+        "DOC-03",
+        "DOC-01",
+        "DOC-02"
+      ],
+      "top_score": 0.6652775406837463,
+      "abstained": false,
+      "answerable": false
+    },
+    {
+      "id": "Q095",
+      "category": "unanswerable",
+      "question": "What is the IP rating of the electrical housing for the M-50 motor?",
+      "expected": [],
+      "retrieved": [
+        "DOC-04",
+        "DOC-03",
+        "DOC-01"
+      ],
+      "top_score": 0.555528461933136,
+      "abstained": true,
+      "answerable": false
+    },
+    {
+      "id": "Q096",
+      "category": "unanswerable",
+      "question": "Which model of PLC is used to monitor the E-207 and E-208 error codes?",
+      "expected": [],
+      "retrieved": [
+        "DOC-07",
+        "DOC-08",
+        "DOC-11"
+      ],
+      "top_score": 0.5257058143615723,
+      "abstained": true,
+      "answerable": false
+    },
+    {
+      "id": "Q097",
+      "category": "unanswerable",
+      "question": "What is the weight of the P-200 centrifugal process pump?",
+      "expected": [],
+      "retrieved": [
+        "DOC-01",
+        "DOC-02",
+        "DOC-03"
+      ],
+      "top_score": 0.709904670715332,
+      "abstained": false,
+      "answerable": false
+    },
+    {
+      "id": "Q098",
+      "category": "unanswerable",
+      "question": "What is the maximum allowable voltage drop for the field temperature sensors?",
+      "expected": [],
+      "retrieved": [
+        "DOC-10",
+        "DOC-01",
+        "DOC-03"
+      ],
+      "top_score": 0.36747443675994873,
+      "abstained": true,
+      "answerable": false
+    },
+    {
+      "id": "Q099",
+      "category": "unanswerable",
+      "question": "Where is the main emergency assembly point located in case of a plant shutdown?",
+      "expected": [],
+      "retrieved": [
+        "DOC-14",
+        "DOC-11",
+        "DOC-04"
+      ],
+      "top_score": 0.5258628129959106,
+      "abstained": true,
+      "answerable": false
+    },
+    {
+      "id": "Q100",
+      "category": "unanswerable",
+      "question": "What is the cost of ordering a replacement BRG-4410 bearing from the supplier?",
+      "expected": [],
+      "retrieved": [
+        "DOC-09",
+        "DOC-15",
+        "DOC-06"
+      ],
+      "top_score": 0.6655076742172241,
+      "abstained": false,
+      "answerable": false
+    }
+  ],
+  "accuracy": 0.65
+}

@@ -292,17 +292,17 @@ def print_report(metrics, system_name):
 def main():
     parser = argparse.ArgumentParser(description="Evaluate RAG retrieval.")
     parser.add_argument("--system", choices=["retriever", "bm25", "reranker"],
-                        default="reranker", help="Which system to evaluate")
+                        default="bm25", help="Which system to evaluate")
     parser.add_argument("--verbose", action="store_true",
                         help="Print per-question results")
-    parser.add_argument("--threshold", type=float, default=0.65,
+    parser.add_argument("--threshold", type=float, default=0,
                         help="Abstention threshold: if top-1 score < this, "
                              "abstain. 0.0 = no abstention (pure baseline).")
     parser.add_argument("--corpus", default=CORPUS_PATH,
                         help="Path to corpus.jsonl")
-    parser.add_argument("--eval", default=EVAL_PATH,
+    parser.add_argument("--eval", default=TEST_PATH,
                         help="Path to eval.jsonl")
-    parser.add_argument("--sliding-window", action="store_true",default=True,
+    parser.add_argument("--sliding-window", action="store_true",default=False,
                         help="Use sliding window approach for chunking")
     parser.add_argument("--window-size", type=int, default=100,
                         help="Size of each sliding window")
