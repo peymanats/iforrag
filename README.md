@@ -151,3 +151,5 @@ This project utilized artificial intelligence models to assist with code structu
 2. **GLM-5.2 (Evaluation Dataset):** Generated the synthetic evaluation dataset used during the initial validation and similarity threshold trials.
 3. **Gemini Flash (Test Dataset):** Generated the 100-sample unseen generalizability test dataset.
 4. **Gemini Flash (Documentation):** Assisted in organizing and polishing the raw diagnostic notes into this structured `README.md` layout. This conversion was strictly bounded to ensure only English grammar, typographical errors, formatting clarity, and descriptive headings were adjusted, retaining the original progress and methodology preserved in previous git commits.
+
+as the system cannot generalize on test set and also bm25 have good accuracy on answerable questions i want to add rule base system and define some treshhold and parameters that fit on validation set and then eval it on test set.
