@@ -343,7 +343,7 @@ def main():
                              "abstain. 0.0 = no abstention (pure baseline).")
     parser.add_argument("--corpus", default=CORPUS_PATH,
                         help="Path to corpus.jsonl")
-    parser.add_argument("--eval", default=TEST_PATH,
+    parser.add_argument("--eval", default=EVAL_PATH,
                         help="Path to eval.jsonl")
     parser.add_argument("--sliding-window", action="store_true",default=False,
                         help="Use sliding window approach for chunking")
