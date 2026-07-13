@@ -247,7 +247,7 @@ def rulebase(
     """
 
     identifiers, content = split_query(query, tokenizer)
-    print("identifiers: ", identifiers)
+    # print("identifiers: ", identifiers)
     # ----------------------------------------------------
     # No identifier -> semantic retrieval directly
     # ----------------------------------------------------

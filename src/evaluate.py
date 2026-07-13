@@ -87,7 +87,7 @@ def evaluate(retrieve_fn, questions, verbose=False, abstain_threshold=0.7):
             results = output
             method = None
             coverage = None
-        print(method)
+        # print(method)
         end=time.time()
         retrieve_time += (end-start)
         retrieved_docs = [result[0] for result in results]
@@ -175,7 +175,7 @@ def evaluate(retrieve_fn, questions, verbose=False, abstain_threshold=0.7):
             method = None
             coverage = None
         top_score = results[0][1] if results else 0.0
-        print(method)
+        # print(method)
         if coverage is not None:
             unans_coverage.append(coverage)
         unans_scores.append(top_score)
