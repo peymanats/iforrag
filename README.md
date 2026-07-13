@@ -88,7 +88,10 @@ We implemented sliding window chunking and tested it under both pure semantic se
 
 After testing different thresholds and sliding window parameters, the semantic retriever alone configured with a threshold of `0.65` achieved **85% accuracy** on our validation dataset. 
 
-To test the generalizability of this model, we evaluated it against an unseen test dataset of 100 samples.
+To test the generalizability of this model, we evaluated it against an unseen test dataset of 100 samples.Here is the plots:
+
+<img src="results/validation/retriever_t6_5/score_distribution.png" alt="score distribution" width="500" />
+<img src="results/validation/retriever_t6_5/confusion_matrix.png" alt="confusion matrix" width="500" />
 
 ### Generalizability Results:
 * **Accuracy on unseen test samples:** Dropped to **65%**.
