@@ -103,8 +103,43 @@ To test the generalizability of this model, we evaluated it against an unseen te
 * **Conclusion:** On unseen data, the semantic retriever with a static `0.65` threshold struggles to make correct decisions. This demonstrates that a single fixed threshold is highly vulnerable to distribution shifts and cannot cleanly separate unanswerable questions on unseen data.
 
 ---
+## 8. Hybrid Rule-Based Pipeline Design
 
-## 8. Quantitative Evaluation Summary
+To address the generalizability bottleneck under distribution shifts, we designed a hybrid rule-based system. 
+
+### Diagnostic Motivation:
+While the semantic retriever alone works reasonably well on the validation set, its vulnerability to a static similarity threshold makes it less reliable on unseen test data. However, the term-based BM25 engine demonstrates robust precision on queries containing explicit physical identifiers or codes (e.g., `p-200`, `e-207`, `brg-4410`, `dn65`). 
+
+### Pipeline Architecture:
+We structured a hybrid routing logic based on the presence of physical identifiers and keyword coverage density:
+
+1. **Identifier Extraction:** Scan the input query for known alphanumeric identifier patterns (e.g., equipment codes like `dn65` or part formats like `p-200`).
+2. **Dynamic Routing:**
+   * **Route A (No Identifier):** If no matching identifier is found, fall back directly to the semantic retriever using the calibrated threshold boundaries.
+   * **Route B (Identifier Found):** If an identifier is parsed, retrieve the top candidate document using BM25.
+3. **Keyword Coverage Filter:** For Route B, we extract content words from the query by stripping common stopwords (e.g., `"what"`, `"which"`, `"how"`, `"when"`). We then measure the coverage ratio of these remaining query keywords within the text of the top BM25 candidate.
+4. **Fallback Execution:**
+   * If the keyword coverage ratio meets or exceeds the coverage threshold (`0.51`), we route retrieval through the BM25 pipeline.
+   * If coverage is below `0.51` (indicating that the identifier matched, but other contextual keywords were missing or contradictory), we treat the keyword match as a potential false positive and fall back to semantic retrieval.
+
+### Trial and Error (Query Rewriting):
+We experimented with appending contextual instructions to the query when BM25 score and coverage were low (e.g., rewriting the query to append `" The exact identifier may not exist. Find the closest relevant document."`). Evaluation metrics indicated that query expansion introduced additional noise, lowering the accuracy compared to baseline semantic search. Consequently, the query rewriting layer was removed in favor of direct fallback routing.
+
+### Calibration & Results:
+Tuning this system on our validation dataset using a keyword coverage threshold of `0.51` and an abstention threshold of `0.65` improved validation accuracy to **91.4%**. 
+
+Below are the confusion matrices comparing the best semantic-only retriever against the hybrid rule-based system:
+
+Rule-based Pipeline:
+<img src="results/validation/rulebased_bm25_covrage/confusion_matrix.png" alt="rulebased confusion matrix" width="500" />
+
+Semantic Retriever (0.65 threshold):
+<img src="results/validation/retriever_t6_5/confusion_matrix.png" alt="semantic only confusion matrix" width="500" />
+
+
+---
+
+## 9. Quantitative Evaluation Summary
 
 The following table provides a consolidation of metrics obtained from validating the different pipeline configurations under varying thresholds:
 
@@ -131,7 +166,7 @@ The following table provides a consolidation of metrics obtained from validating
 
 ---
 
-## 9. How to Reproduce Results
+## 10. How to Reproduce Results
 
 To run the benchmarking pipeline and compile all metric reports:
 
@@ -143,7 +178,7 @@ To run the benchmarking pipeline and compile all metric reports:
    ```bash
    python src/evall_all.py
 
-## 10. AI Usage
+## 11. AI Usage
 
 This project utilized artificial intelligence models to assist with code structure, evaluation data generation, and documentation polishing:
 
@@ -152,9 +187,3 @@ This project utilized artificial intelligence models to assist with code structu
 3. **Gemini Flash (Test Dataset):** Generated the 100-sample unseen generalizability test dataset.
 4. **Gemini Flash (Documentation):** Assisted in organizing and polishing the raw diagnostic notes into this structured `README.md` layout. This conversion was strictly bounded to ensure only English grammar, typographical errors, formatting clarity, and descriptive headings were adjusted, retaining the original progress and methodology preserved in previous git commits.
 
-as the system cannot generalize on test set and also bm25 have good accuracy on answerable questions i want to add rule base system and define some treshhold and parameters that fit on validation set and then eval it on test set.
-i design rule that identify terms like p-200,e-207,brg-4410,dn65 in query and if find them use bm25 to score them and if it cant find any identifier use semantic search and if it find then find the highest rank doc using bm25 and then remove stopwords like: "what", "which", "how", "when", "where", "who", "why" and so on the query have just the important keywords and check the coverage of these query keywords with topdoc words if the covarage is more than treshhold it use bm25 for returing the top docs and else it use semantic as bm25 is good at findings keywords like eorr codes it increase the accuracy of semantic search alone that was ~85% to 91% with treshholds 0.5 for coverage and 0.65 for unswerable on validation dataset before this i have also use to query rewriting to when the bm25 score is low than treshold and coverage is low add text to query like " The exact identifier may not exist. Find the closest relevant document." so semantic can better determine the unaswerables but that didnt work and have lower accuracy than baseline semantic search. here are two confusion matrix of best semantic only and this rule base method:
-
-rule base: results\validation\rulebased_bm25_covrage\confusion_matrix.png
-
-semantic only : results\validation\retriever_t6_5\confusion_matrix.png
