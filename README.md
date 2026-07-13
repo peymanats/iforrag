@@ -11,8 +11,8 @@ After running the baseline, the results show that the baseline does not support 
 
 After adding a threshold of `0.5` to the baseline and evaluating, the main issue identified is when a question is unanswerable but the model returns a document anyway, resulting in false positives. As shown in the score distribution plot below, there is no single threshold that can cleanly separate answerable and unanswerable queries.
 
-![score distribution](results/validation/baseline_tresh/score_distribution.png)
-![confusion matrix](results/validation/baseline_tresh/confusion_matrix.png)
+<img src="results/validation/baseline_tresh/score_distribution.png" alt="score distribution" width="500" />
+<img src="results/validation/baseline_tresh/confusion_matrix.png" alt="confusion matrix" width="500" />
 
 > **Diagnostic Hypothesis:** The chunk contexts are too general and lack specificity. Consequently, any query that points even slightly toward the general topic receives a high similarity score, even if it is unrelated.
 
@@ -28,8 +28,8 @@ To address the context specificity issue, we implemented a sentence chunking str
 
 Below are the distribution and confusion matrix plots for this experiment:
 
-![score distribution](results/validation/sentence_chunking/score_distribution.png)
-![confusion matrix](results/validation/sentence_chunking/confusion_matrix.png)
+<img src="results/validation/sentence_chunking/score_distribution.png" alt="score distribution" width="500" />
+<img src="results/validation/sentence_chunking/confusion_matrix.png" alt="confusion matrix" width="500" />
 
 ---
 
@@ -37,8 +37,8 @@ Below are the distribution and confusion matrix plots for this experiment:
 
 Simply prefixing the document title to each sentence chunk boosted the similarity scores of the True Positive (TP) samples. With this modification and a threshold of approximately `0.7`, unanswerable questions can be approximately separated from answerable ones.
 
-![score distribution](results/validation/sentences_chunking_title/score_distribution.png)
-![confusion matrix](results/validation/sentences_chunking_title/confusion_matrix.png)
+<img src="results/validation/sentences_chunking_title/score_distribution.png" alt="score distribution" width="500" />
+<img src="results/validation/sentences_chunking_title/confusion_matrix.png" alt="confusion matrix" width="500" />
 
 ---
 
@@ -79,8 +79,8 @@ We implemented sliding window chunking and tested it under both pure semantic se
 * For pure semantic search, sentence-level chunking still yields better overall separation.
 * For the reranking pipeline, the sliding window approach performs better on answerable queries.
 
-![score distribution](results/validation/reranker_sliding_100_50/score_distribution.png)
-![confusion matrix](results/validation/reranker_sliding_100_50/confusion_matrix.png)
+<img src="results/validation/reranker_sliding_100_50/score_distribution.png" alt="score distribution" width="500" />
+<img src="results/validation/reranker_sliding_100_50/confusion_matrix.png" alt="confusion matrix" width="500" />
 
 ---
 
