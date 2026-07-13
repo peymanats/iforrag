@@ -128,13 +128,11 @@ We experimented with appending contextual instructions to the query when BM25 sc
 ### Calibration & Results:
 Tuning this system on our validation dataset using a keyword coverage threshold of `0.51` and an abstention threshold of `0.65` improved validation accuracy to **91.4%**. 
 
-Below are the confusion matrices comparing the best semantic-only retriever against the hybrid rule-based system:
+Below is a side-by-side comparison of the confusion matrices for the hybrid rule-based system versus the baseline semantic-only retriever:
 
-Rule-based Pipeline:
-<img src="results/validation/rulebased_bm25_covrage/confusion_matrix.png" alt="rulebased confusion matrix" width="500" />
-
-Semantic Retriever (0.65 threshold):
-<img src="results/validation/retriever_t6_5/confusion_matrix.png" alt="semantic only confusion matrix" width="500" />
+| Rule-based Pipeline | Semantic Retriever (0.65 threshold) |
+| :---: | :---: |
+| <img src="results/validation/rulebased_bm25_covrage/confusion_matrix.png" alt="rulebased confusion matrix" width="360" /> | <img src="results/validation/retriever_t6_5/confusion_matrix.png" alt="semantic only confusion matrix" width="360" /> |
 
 
 ---
