@@ -102,13 +102,41 @@ To test the generalizability of this model, we evaluated it against an unseen te
 
 ---
 
-## 8. How to Reproduce Results
+## 8. Quantitative Evaluation Summary
+
+The following table provides a consolidation of metrics obtained from validating the different pipeline configurations under varying thresholds:
+
+| System / Setting | Dataset | Threshold | Hit-Rate@1 | Hit-Rate@3 | MRR | Abstention | Fabrication | Accuracy | Latency |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **BM25** | Eval | 0.00 | 92.0% | 100.0% | 0.960 | 0.0% | 100.0% | 65.7% | 0.05 ms |
+| **BM25** | Test | 0.00 | 88.9% | 94.4% | 0.927 | 0.0% | 100.0% | 80.0% | 0.09 ms |
+| **RETRIEVER** | Eval | 0.50 | 96.0% | 100.0% | 0.980 | 10.0% | 90.0% | 71.4% | 13.19 ms |
+| **RETRIEVER** | Eval | 0.65 | 84.0% | 88.0% | 0.860 | 90.0% | 10.0% | 85.7% | 13.69 ms |
+| **RETRIEVER** | Test | 0.50 | 88.9% | 95.6% | 0.922 | 10.0% | 90.0% | 81.0% | 14.59 ms |
+| **RETRIEVER** | Test | 0.65 | 65.6% | 70.0% | 0.678 | 60.0% | 40.0% | 65.0% | 14.67 ms |
+| **RETRIEVER (Sliding Window)** | Eval | 0.50 | 96.0% | 100.0% | 0.980 | 20.0% | 80.0% | 74.3% | 13.59 ms |
+| **RETRIEVER (Sliding Window)** | Eval | 0.65 | 80.0% | 80.0% | 0.800 | 80.0% | 20.0% | 80.0% | 13.67 ms |
+| **RETRIEVER (Sliding Window)** | Test | 0.50 | 90.0% | 93.3% | 0.915 | 10.0% | 90.0% | 82.0% | 14.82 ms |
+| **RETRIEVER (Sliding Window)** | Test | 0.65 | 63.3% | 64.4% | 0.639 | 60.0% | 40.0% | 63.0% | 14.87 ms |
+| **RERANKER** | Eval | 0.50 | 96.0% | 100.0% | 0.980 | 10.0% | 90.0% | 71.4% | 13.38 ms |
+| **RERANKER** | Eval | 0.65 | 84.0% | 88.0% | 0.860 | 90.0% | 10.0% | 85.7% | 14.01 ms |
+| **RERANKER** | Test | 0.50 | 88.9% | 95.6% | 0.922 | 10.0% | 90.0% | 81.0% | 14.66 ms |
+| **RERANKER** | Test | 0.65 | 65.6% | 70.0% | 0.678 | 60.0% | 40.0% | 65.0% | 14.93 ms |
+| **RERANKER (Sliding Window)** | Eval | 0.50 | 100.0% | 100.0% | 1.000 | 20.0% | 80.0% | 77.1% | 16.55 ms |
+| **RERANKER (Sliding Window)** | Eval | 0.65 | 80.0% | 80.0% | 0.800 | 80.0% | 20.0% | 80.0% | 16.32 ms |
+| **RERANKER (Sliding Window)** | Test | 0.50 | 90.0% | 92.2% | 0.911 | 10.0% | 90.0% | 82.0% | 17.41 ms |
+| **RERANKER (Sliding Window)** | Test | 0.65 | 63.3% | 64.4% | 0.639 | 60.0% | 40.0% | 63.0% | 16.71 ms |
+
+---
+
+## 9. How to Reproduce Results
 
 To run the benchmarking pipeline and compile all metric reports:
 
 1. Install the required PDF generation dependencies:
    ```bash
    pip install reportlab
-2. Run src/evall_all.py:
+
+2. Run the evaluation master script from your project directory:
    ```bash
    python src/evall_all.py
