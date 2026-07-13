@@ -88,13 +88,27 @@ We implemented sliding window chunking and tested it under both pure semantic se
 
 After testing different thresholds and sliding window parameters, the semantic retriever alone configured with a threshold of `0.65` achieved **85% accuracy** on our validation dataset. 
 
-Here is the plots:
+Here are the validation calibration plots:
 
 <img src="results/validation/retriever_t6_5/score_distribution.png" alt="score distribution" width="500" />
 <img src="results/validation/retriever_t6_5/confusion_matrix.png" alt="confusion matrix" width="500" />
 
-To test the generalizability of this model, we evaluated it against an unseen test dataset of 100 samples that was created using gemini flash 3.5.
+To test the generalizability of this model, we evaluated it against an unseen test dataset of 100 samples created using **Gemini Flash 3.5**.
 
 ### Generalizability Results:
 * **Accuracy on unseen test samples:** Dropped to **65%**.
+* **BM25 performance on test set:** For only answerable questions within the test dataset, BM25 demonstrated solid performance with an **88.88% Hit@1**. This indicates that hybrid search combined with a dynamic (rather than static) threshold holds potential for practical deployments.
 * **Conclusion:** On unseen data, the semantic retriever with a static `0.65` threshold struggles to make correct decisions. This demonstrates that a single fixed threshold is highly vulnerable to distribution shifts and cannot cleanly separate unanswerable questions on unseen data.
+
+---
+
+## 8. How to Reproduce Results
+
+To run the benchmarking pipeline and compile all metric reports:
+
+1. Install the required PDF generation dependencies:
+   ```bash
+   pip install reportlab
+2. Run src/evall_all.py:
+   ```bash
+   python src/evall_all.py
