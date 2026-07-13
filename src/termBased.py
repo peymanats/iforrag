@@ -104,6 +104,33 @@ def load_corpus(path):
                 docs.append(json.loads(line))
     return docs
 
+import re
+
+def split_query(query, tokenizer):
+    tokens = tokenizer.tokenize(query)
+
+    identifiers = []
+    content = []
+
+    for token in tokens:
+        if re.fullmatch(r"[a-z]+-\d+", token):      # p-200, e-207
+            identifiers.append(token)
+        elif re.fullmatch(r"dn\d+", token):         # dn65
+            identifiers.append(token)
+        else:
+            content.append(token)
+
+    return identifiers, content
+
+STOPWORDS = {
+    "what", "which", "how", "when", "where", "who", "why",
+    "is", "are", "was", "were", "the", "a", "an",
+    "of", "to", "for", "in", "on", "at", "with",
+    "and", "or", "do", "does", "did", "can", "could",
+    "should", "would", "may", "might", "be", "by",
+    "from", "it", "its", "this", "that"
+}
+
 def build_baseline_system(corpus_path,sliding_window=False,window_size=100,step_size=50):
     """Build the baseline index and return a retrieve(query, top_k) function."""
     from sentence_transformers import SentenceTransformer
@@ -199,6 +226,110 @@ def build_baseline_system(corpus_path,sliding_window=False,window_size=100,step_
         return results
     return reranker ,retrieve, build_time
 
+def rulebase(
+    query,
+    bm25,
+    tokenizer,
+    index_builder,
+    semantic_retrieve,
+    semantic_reranker,
+    bm25_threshold=9.05,
+    coverage_threshold=0.5,
+    top_k=8,
+):
+    """
+    Rule-based retrieval pipeline.
+
+    Returns:
+        ("semantic", results)
+        ("reranker", results)
+        ("unanswerable", [])
+    """
+
+    identifiers, content = split_query(query, tokenizer)
+    # print("identifiers: ", identifiers)
+    # ----------------------------------------------------
+    # No identifier -> semantic retrieval directly
+    # ----------------------------------------------------
+    if not identifiers:
+        results = semantic_retrieve(query, top_k=top_k)
+
+        # if not results or results[0][1] < semantic_threshold:
+        #     return "unanswerable", []
+
+        return  results,"semantic" , None
+
+    # ----------------------------------------------------
+    # Identifier exists -> BM25
+    # ----------------------------------------------------
+    bm25_results = bm25(query)
+
+    top_doc, top_score = bm25_results[0]
+
+    # ----------------------------------------------------
+    # BM25 confidence
+    # ----------------------------------------------------
+    # if top_score < bm25_threshold:
+
+    #     results = semantic_retrieve(
+    #         query ,
+    #         # + " The exact identifier may not exist. Find the closest relevant document.",
+    #         top_k=top_k,
+    #     )
+
+    #     # if not results or results[0][1] < semantic_threshold:
+    #     #     return "unanswerable", []
+
+    #     return  results ,"semantic" , 0.0
+
+    # ----------------------------------------------------
+    # Coverage check
+    # ----------------------------------------------------
+    doc = index_builder.documents[top_doc]
+
+    doc_tokens = set(
+        tokenizer.tokenize(doc["title"] + " " + doc["text"])
+    )
+
+    important_terms = [
+        t for t in content
+        if t not in STOPWORDS
+    ]
+
+    if important_terms:
+
+        matched = sum(
+            term in doc_tokens
+            for term in important_terms
+        )
+
+        coverage = matched / len(important_terms)
+
+    else:
+        coverage = 1.0
+
+    if coverage < coverage_threshold:
+
+        results = semantic_retrieve(
+            query ,
+            # + " The requested functionality may not exist. Find the closest relevant document.",
+            top_k=top_k,
+        )
+
+        # if not results or results[0][1] < semantic_threshold:
+        #     return "unanswerable", []
+
+        return results,"semantic" ,coverage
+
+    # ----------------------------------------------------
+    # BM25 candidates -> semantic reranker
+    # ----------------------------------------------------
+    results = bm25(query)[:top_k]
+
+    # if not results or results[0][1] < semantic_threshold:
+    #     return "unanswerable", []
+
+    return results, "bm25" , coverage
 
 def compute_idf(inverted_index, total_docs):
     idf = {}
@@ -239,12 +370,24 @@ if __name__ == "__main__":
     inverted_index = index_builder.build(corpus)
     total_docs = len(corpus)
     idf = compute_idf(inverted_index, total_docs)
-    reranker ,_,_ = build_baseline_system(CORPUS_PATH,sliding_window=False,window_size=100,step_size=50)
+    reranker ,retriever,_ = build_baseline_system(CORPUS_PATH,sliding_window=False,window_size=100,step_size=50)
     # Example query
     query = "What is the rated output of the C-100 compressor?"
     query_terms = tokenizer.tokenize(query)
     # Compute BM25 scores for each document
     bm25 = lambda q: compute_bm25_score(q, index_builder, inverted_index, idf, index_builder.doc_lengths, index_builder.avgdl, tokenizer=tokenizer, top_k=5)
-    reranker_results = reranker(query, bm25, top_k=8)
-    print(f"Reranker results for query '{query}':", reranker_results)
+    results,_,_ = rulebase(
+    query=query,
+    bm25=bm25,
+    tokenizer=tokenizer,
+    index_builder=index_builder,
+    semantic_retrieve=retriever,
+    semantic_reranker=reranker,
+    bm25_threshold=9.05,      # tune on validation
+    coverage_threshold=0.5,  # tune on validation
+)
+
+    print(results)
+    # reranker_results = reranker(query, bm25, top_k=8)
+    # print(f"Reranker results for query '{query}':", reranker_results)
     # print(f"BM25 scores for query '{query}':", scores)

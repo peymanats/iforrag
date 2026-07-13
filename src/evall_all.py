@@ -3,7 +3,7 @@
 evaluate_all.py
 
 A unified script to run evaluations for all retrieval configurations 
-(BM25, Dense Retriever, and Hybrid Reranker) on both 'eval' and 'test' datasets.
+(BM25, Dense Retriever, Hybrid Reranker, and Rule-based Pipeline) on both 'eval' and 'test' datasets.
 Outputs results to the console, CSV, JSON, and a structured PDF report.
 """
 
@@ -28,7 +28,7 @@ try:
     from evaluate import evaluate, load_eval, CORPUS_PATH, EVAL_PATH, TEST_PATH
     from termBased import (
         Tokenizer, IndexBuilder, compute_idf, compute_bm25_score, 
-        build_baseline_system, load_corpus
+        build_baseline_system, load_corpus, rulebase
     )
 except ImportError as e:
     print(f"Error: Could not import required modules. Ensure 'evaluate.py' "
@@ -108,6 +108,46 @@ def get_cached_system(system_name, sliding_window, corpus_path):
             top_k=8,
         )
         retrieve_fn = lambda query: reranker_func(query, bm_25, top_k=8)
+
+    elif system_name == "rulebase":
+        tokenizer = Tokenizer()
+        index_builder = IndexBuilder(tokenizer)
+        corpus = load_corpus(corpus_path)
+        start = time.time()
+        inverted_index = index_builder.build(corpus)
+        end = time.time()
+        bm25_build_time = (end - start) / len(corpus)
+        total_docs = len(corpus)
+        idf = compute_idf(inverted_index, total_docs)
+        
+        # Retrieve the reranker and standard retrieval routines
+        reranker, retriever, reranker_build_time = build_baseline_system(
+            corpus_path, sliding_window=sliding_window, window_size=100, step_size=50
+        )
+        build_time = bm25_build_time + reranker_build_time
+        
+        bm_25 = lambda query: compute_bm25_score(
+            query,
+            index_builder,
+            inverted_index,
+            idf,
+            index_builder.doc_lengths,
+            index_builder.avgdl,
+            tokenizer=tokenizer,
+            top_k=8,
+        )
+        
+        retrieve_fn = lambda query: rulebase(
+            query,
+            bm_25,
+            tokenizer=tokenizer,
+            index_builder=index_builder,
+            semantic_retrieve=retriever,
+            semantic_reranker=reranker,
+            bm25_threshold=9.05,
+            coverage_threshold=0.51,
+            top_k=8
+        )
     else:
         raise ValueError(f"Unknown system setting: {system_name}")
         
@@ -280,35 +320,63 @@ def main():
 
     # Layout: (system_name, sliding_window, threshold, dataset_name, dataset_path)
     configs = [
+        # ──────────────────────────────────────────────────────
+        # EVAL DATASETS
+        # ──────────────────────────────────────────────────────
         # Baseline BM25
         ("bm25", False, 0.0, "Eval", EVAL_PATH),
-        ("bm25", False, 0.0, "Test", TEST_PATH),
         
         # Dense Retriever (Sentence-Level Split)
         ("retriever", False, 0.5, "Eval", EVAL_PATH),
         ("retriever", False, 0.65, "Eval", EVAL_PATH),
-        ("retriever", False, 0.5, "Test", TEST_PATH),
-        ("retriever", False, 0.65, "Test", TEST_PATH),
         
         # Dense Retriever (Sliding Window Split)
         ("retriever", True, 0.5, "Eval", EVAL_PATH),
         ("retriever", True, 0.65, "Eval", EVAL_PATH),
-        ("retriever", True, 0.5, "Test", TEST_PATH),
-        ("retriever", True, 0.65, "Test", TEST_PATH),
         
         # Hybrid Reranker (Sentence-Level)
         ("reranker", False, 0.5, "Eval", EVAL_PATH),
         ("reranker", False, 0.65, "Eval", EVAL_PATH),
-        ("reranker", False, 0.5, "Test", TEST_PATH),
-        ("reranker", False, 0.65, "Test", TEST_PATH),
         
         # Hybrid Reranker (Sliding Window)
         ("reranker", True, 0.5, "Eval", EVAL_PATH),
         ("reranker", True, 0.65, "Eval", EVAL_PATH),
+        
+        # Rule-based Pipeline (Sentence-Level)
+        ("rulebase", False, 0.65, "Eval", EVAL_PATH),
+        
+        # Rule-based Pipeline (Sliding Window)
+        ("rulebase", True, 0.65, "Eval", EVAL_PATH),
+
+        # ──────────────────────────────────────────────────────
+        # TEST DATASETS
+        # ──────────────────────────────────────────────────────
+        # Baseline BM25
+        ("bm25", False, 0.0, "Test", TEST_PATH),
+        
+        # Dense Retriever (Sentence-Level Split)
+        ("retriever", False, 0.5, "Test", TEST_PATH),
+        ("retriever", False, 0.65, "Test", TEST_PATH),
+        
+        # Dense Retriever (Sliding Window Split)
+        ("retriever", True, 0.5, "Test", TEST_PATH),
+        ("retriever", True, 0.65, "Test", TEST_PATH),
+        
+        # Hybrid Reranker (Sentence-Level)
+        ("reranker", False, 0.5, "Test", TEST_PATH),
+        ("reranker", False, 0.65, "Test", TEST_PATH),
+        
+        # Hybrid Reranker (Sliding Window)
         ("reranker", True, 0.5, "Test", TEST_PATH),
         ("reranker", True, 0.65, "Test", TEST_PATH),
         
+        # Rule-based Pipeline (Sentence-Level)
+        ("rulebase", False, 0.65, "Test", TEST_PATH),
+        
+        # Rule-based Pipeline (Sliding Window)
+        ("rulebase", True, 0.65, "Test", TEST_PATH),
     ]
+
 
     results = []
 

@@ -27,7 +27,7 @@ import sys
 import numpy as np
 import re
 import time
-from termBased import Tokenizer, IndexBuilder, InvertedIndex, compute_idf, compute_bm25_score ,build_baseline_system, load_corpus
+from termBased import split_query, rulebase,Tokenizer, IndexBuilder, InvertedIndex, compute_idf, compute_bm25_score ,build_baseline_system, load_corpus
 # ──────────────────────────────────────────────
 # Paths
 # ──────────────────────────────────────────────
@@ -74,14 +74,27 @@ def evaluate(retrieve_fn, questions, verbose=False, abstain_threshold=0.7):
     ans_false_abstain = 0   # answerable questions wrongly rejected by threshold
     per_question = []
     retrieve_time = 0.0
+    ans_coverage = []
     for q in answerable:
         expected = set(q["expected_docs"])
         start=time.time()
-        results = retrieve_fn(q["question"])
+        # results = retrieve_fn(q["question"])
+        output = retrieve_fn(q["question"])
+
+        if isinstance(output, tuple) and len(output) == 3:
+            results, method, coverage = output
+        else:
+            results = output
+            method = None
+            coverage = None
+        # print(method)
         end=time.time()
         retrieve_time += (end-start)
         retrieved_docs = [result[0] for result in results]
         top_score = results[0][1] if results else 0.0
+        if coverage is not None:
+            ans_coverage.append(coverage)
+
         ans_scores.append(top_score)
 
         # Threshold-based abstention check
@@ -112,10 +125,11 @@ def evaluate(retrieve_fn, questions, verbose=False, abstain_threshold=0.7):
             "question": q["question"],
             "expected": q["expected_docs"],
             "retrieved": retrieved_docs[:3],
-            "top_score": top_score,
-            "hit@1": h1 and not abstained,
-            "first_correct_rank": rank,
-            "abstained": abstained,
+            "top_score": float(top_score),
+            "coverage": coverage,
+            "hit@1": bool(h1 and not abstained),
+            "first_correct_rank": int(rank) if rank else None,
+            "abstained": bool(abstained),
             "answerable": True,
         })
 
@@ -149,10 +163,21 @@ def evaluate(retrieve_fn, questions, verbose=False, abstain_threshold=0.7):
     # Incorrect = top_score >= threshold (fabricates a wrong answer).
     unans_scores = []
     correct_abstain = 0
-
+    unans_coverage = []
     for q in unanswerable:
-        results = retrieve_fn(q["question"])
+        # results = retrieve_fn(q["question"])
+        output = retrieve_fn(q["question"])
+
+        if isinstance(output, tuple) and len(output) == 3:
+            results, method, coverage = output
+        else:
+            results = output
+            method = None
+            coverage = None
         top_score = results[0][1] if results else 0.0
+        # print(method)
+        if coverage is not None:
+            unans_coverage.append(coverage)
         unans_scores.append(top_score)
 
         abstained = top_score < abstain_threshold if abstain_threshold > 0 else False
@@ -165,8 +190,9 @@ def evaluate(retrieve_fn, questions, verbose=False, abstain_threshold=0.7):
             "question": q["question"],
             "expected": [],
             "retrieved": [r[0] for r in results[:3]],
-            "top_score": top_score,
-            "abstained": abstained,
+            "top_score": float(top_score),
+            "coverage": coverage,
+            "abstained": bool(abstained),
             "answerable": False,
         })
 
@@ -188,6 +214,8 @@ def evaluate(retrieve_fn, questions, verbose=False, abstain_threshold=0.7):
     ans_scores = np.array(ans_scores) if ans_scores else np.array([0.0])
     unans_scores = np.array(unans_scores) if unans_scores else np.array([0.0])
 
+    ans_coverage = np.array(ans_coverage) if ans_coverage else np.array([0.0])
+    unans_coverage = np.array(unans_coverage) if unans_coverage else np.array([0.0])
     # ── Per-category breakdown ──
     categories = {}
     for pq in per_question:
@@ -217,6 +245,10 @@ def evaluate(retrieve_fn, questions, verbose=False, abstain_threshold=0.7):
         "per_category": categories,
         "per_question": per_question,
         "accuracy": accuracy,
+        "avg_coverage_answerable": float(np.mean(ans_coverage)),
+        "avg_coverage_unanswerable": float(np.mean(unans_coverage)),
+        "min_coverage_answerable": float(np.min(ans_coverage)),
+        "max_coverage_unanswerable": float(np.max(unans_coverage)),
     },retrieve_time
 
 # ──────────────────────────────────────────────
@@ -278,6 +310,17 @@ def print_report(metrics, system_name):
     print()
     print("  ──accuracy──: ",metrics["accuracy"])
     print()
+    print()
+    print("  ── Coverage Distribution ──")
+    print(
+        f"    Answerable   — avg={metrics['avg_coverage_answerable']:.3f} "
+        f"min={metrics['min_coverage_answerable']:.3f}"
+    )
+
+    print(
+        f"    Unanswerable — avg={metrics['avg_coverage_unanswerable']:.3f} "
+        f"max={metrics['max_coverage_unanswerable']:.3f}"
+    )
     print("  ── Per-Category Breakdown (Hit-Rate@1) ──")
     for cat, vals in sorted(metrics["per_category"].items()):
         rate = vals["hit1"] / vals["total"] if vals["total"] else 0
@@ -291,16 +334,16 @@ def print_report(metrics, system_name):
 
 def main():
     parser = argparse.ArgumentParser(description="Evaluate RAG retrieval.")
-    parser.add_argument("--system", choices=["retriever", "bm25", "reranker"],
-                        default="bm25", help="Which system to evaluate")
+    parser.add_argument("--system", choices=["retriever", "bm25", "reranker","rulebase"],
+                        default="rulebase", help="Which system to evaluate")
     parser.add_argument("--verbose", action="store_true",
                         help="Print per-question results")
-    parser.add_argument("--threshold", type=float, default=0,
+    parser.add_argument("--threshold", type=float, default=0.65,
                         help="Abstention threshold: if top-1 score < this, "
                              "abstain. 0.0 = no abstention (pure baseline).")
     parser.add_argument("--corpus", default=CORPUS_PATH,
                         help="Path to corpus.jsonl")
-    parser.add_argument("--eval", default=TEST_PATH,
+    parser.add_argument("--eval", default=EVAL_PATH,
                         help="Path to eval.jsonl")
     parser.add_argument("--sliding-window", action="store_true",default=False,
                         help="Use sliding window approach for chunking")
@@ -366,6 +409,42 @@ def main():
             top_k=8,
         )
         retrieve_fn = lambda query: reranker(query, bm_25, top_k=8)
+    
+    elif "rulebase":
+        
+        tokenizer = Tokenizer()
+        index_builder = IndexBuilder(tokenizer)
+
+        # Load your corpus here (list of documents)
+        corpus = load_corpus(args.corpus)
+        start = time.time()
+        inverted_index = index_builder.build(corpus)
+        end =  time.time()
+        bm25_build_time = (end - start) / len(corpus)
+        total_docs = len(corpus)
+        idf = compute_idf(inverted_index, total_docs)
+        reranker ,retriver,reranker_build_time = build_baseline_system(args.corpus, args.sliding_window, args.window_size, args.step_size)
+        build_time = bm25_build_time + reranker_build_time
+        print(f"create func for bm25")
+        
+        bm_25 = lambda query: compute_bm25_score(
+            query,
+            index_builder,
+            inverted_index,
+            idf,
+            index_builder.doc_lengths,
+            index_builder.avgdl,
+            tokenizer=tokenizer,
+            top_k=8,
+        )
+        retrieve_fn = lambda query: rulebase(query, bm_25, tokenizer=tokenizer,
+                                    index_builder=index_builder,
+                                    semantic_retrieve=retriver,
+                                    semantic_reranker=reranker,
+                                    bm25_threshold=9.05,      # tune on validation
+                                    coverage_threshold=0.51,  # tune on validation
+                                    top_k=8)
+
     else:
         raise ValueError(f"Unknown system: {args.system}")
 
