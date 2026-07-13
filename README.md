@@ -142,3 +142,12 @@ To run the benchmarking pipeline and compile all metric reports:
 2. Run the evaluation master script from your project directory:
    ```bash
    python src/evall_all.py
+
+## 10. AI Usage
+
+This project utilized artificial intelligence models to assist with code structure, evaluation data generation, and documentation polishing:
+
+1. **GLM-5.2 (Code Assistance):** Assisted in drafting the initial baseline version of the evaluation harness (`evaluate.py`), which originally only supported semantic retriever evaluations. We subsequently modified and extended this harness to measure index construction speed (`build_time`), compute BM25 matrices, and implement two-stage hybrid reranker mechanics.
+2. **GLM-5.2 (Evaluation Dataset):** Generated the synthetic evaluation dataset used during the initial validation and similarity threshold trials.
+3. **Gemini Flash (Test Dataset):** Generated the 100-sample unseen generalizability test dataset.
+4. **Gemini Flash (Documentation):** Assisted in organizing and polishing the raw diagnostic notes into this structured `README.md` layout. This conversion was strictly bounded to ensure only English grammar, typographical errors, formatting clarity, and descriptive headings were adjusted, retaining the original progress and methodology preserved in previous git commits.
