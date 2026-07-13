@@ -67,7 +67,7 @@ We implemented a two-stage reranker:
 We created a diagnostic notebook, `near_duplicate.ipynb`, to run similarity checks across all sentence embeddings. Pairs with a **cosine similarity score higher than 0.8** were flagged as potential duplicates or logical contradictions:
 
 * **Knowledge Conflicts:** Identified between `DOC-02_s_2` (referencing a pressure of 16) and `DOC-01_s_2` (referencing a pressure of 12).
-  * *Resolution:* We dropped the sentence containing the incorrect **16** value and preserved the sentence specifying **12** (since 12 is the true maximum pressure specification).
+  * *Resolution:* We dropped the sentence containing the  **16** value and preserved the sentence specifying **12** (since its maximum pressure specification lower is better).
 * **Knowledge Duplication:** Identified between `DOC-05_s_0` and `DOC-06_s_0`.
   * *Resolution:* We removed the **less context-rich** sentence chunk to preserve data richness while eliminating redundant vectors from the index.
 
